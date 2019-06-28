@@ -5,6 +5,7 @@
     <script src="jspsych.js"></script>
     <script src="plugins/jspsych-instructions.js"></script>
     <script src="plugins/jspsych-audio-button-response.js"></script>
+    <script src="plugins/jspsych-audio-keyboard-response.js"></script>
     <script src="plugins/jspsych-html-button-response.js"></script>
     <script src="poldrack_plugins/jspsych-single-stim-button.js"></script>
     <script src="plugins/jspsych-survey-text.js"></script>
@@ -212,23 +213,45 @@ var main_loop = {
 timeline.push(visual_melody_instructions_block_2);
 
 var twoblock = {
-    timeline: [
-        {
-            type: 'audio-button-response',
-            stimulus: jsPsych.timelineVariable('melody'),
-            choices: ['LISTEN'],
-            prompt: "This is where I want my audio to play and they just listen with no response",
-        },
-        {
-            type: 'html-button-response',
-  	    stimulus: "<p>STIMULI</p>",
-            choices: ['This would be a grid that collects multiple responses like trial examples before'],
-            prompt: "<p>This scren will collect their responses in serial order with RT</p>" 
-        }
-    ],
-    timeline_variables: [
-	{ melody: 'stimuli/long/c-le.mp3' },
-    ]
+  timeline: [
+    {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('melody'),
+      choices: jsPsych.NO_KEYS,
+      trial_ends_after_audio: true,
+      prompt: "Listen.",
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played first after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 1,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played second after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 2,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played third after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 3,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    }
+  ],
+  timeline_variables: [
+    { melody: 'stimuli/long/c-le.mp3' },
+  ]
 }
 
 timeline.push(twoblock)
