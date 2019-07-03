@@ -1,0 +1,26 @@
+Count,Pattern,Gram,quintile
+1071,v2 v1 ,Two,1
+561,v3 v2 v1 ,Three,1
+154,v5 v4 v3 v2 v1 ,Five,1
+45,^4 ^5 ^6 v5 v4 v3 v2 ,Seven,1
+17,^2 v7- ,Two,2
+14,^3 ^4 ^5 ^6 v5 v4 v3 v2 v1 ,Nine,1
+6,^1 ^2+ ,Two,3
+4,1 v1+ ^2 ,Three,2
+2,^6 v4 v3 ^4 ^5 ,Five,2
+2,6 ^1 v5 ,Three,3
+2,v5 v1+ ,Two,4
+1,v5 ^6+ ^7 ^1 5 ,Five,3
+1,v5- v3 3 ^4+ v3 ,Five,4
+1,v2 2 ^3 ^4 v2 ,Five,5
+1,v7 v6 v5 ^6 v5 v4 ^5 ^6 v5 ,Nine,2
+1,^3 ^4 v2 v7 ^1 ^2 ^3 3 ^4 ,Nine,3
+1,^2 ^4 v3 v2 v1 v3 v2+ ^3 ^5+ ,Nine,4
+1,v5 v4 v6+ ^7 ^3+ v3 v2 v5 ^4 ,Nine,5
+1,v1 ^2 v1 v7 ^1 ^3 v2 ,Seven,2
+1,^4 v6- v5- ^6- ^4 v2- 2- ,Seven,3
+1,^6 v5+ v4 ^5+ v3 v1 v7- ,Seven,4
+1,1 ^3 v1 ^5 v3 v2 ^3 ,Seven,5
+1,^1 v6 v5+ ,Three,4
+1,v1 v7- ^7 ,Three,5
+1,^5 ^1+ ,Two,5

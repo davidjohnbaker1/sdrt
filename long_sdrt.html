@@ -579,7 +579,7 @@ var subject_id = Math.floor(Math.random()*100000);
 
     timeline.push(bye_block);
 
-/* Online Data Save Function */
+/* Online Data Save Function 
 
 function saveData(name, data){
   var xhr = new XMLHttpRequest();
@@ -587,7 +587,7 @@ function saveData(name, data){
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify({filename: name, filedata: data}));
 }
-
+*/
 
 jsPsych.init({
    timeline: timeline,
@@ -595,14 +595,13 @@ jsPsych.init({
    on_finish: function() { saveData(subject_id,jsPsych.data.get().csv());}
     });
 
-/* Local Save 
+/* Local Save */
   jsPsych.init({
     timeline: timeline,
     preload_audio: audio,
     use_webaudio: true,
-    on_finish: function(){jsPsych.data.displayData();}
+    on_finish: function(){jsPsych.data.get().localSave('csv','mydata.csv');}
   });
-*/
 
   </script>
 </html>
