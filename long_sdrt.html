@@ -52,10 +52,10 @@ timeline.push(survey_trial_1, survey_trial_2, survey_trial_3, survey_trial_4, su
     type: 'instructions',
     pages: ["<p>Thank you for completing the first part of this experiment!</p>" +
 	    "<p>Take a second to rest if you need, the NEXT portion of this survey will ask you to complete a very specific musical task.</p>",
-          "<p>In this experiment you will complete the same task over many trials trials.</p>" 
+          "<p>In this experiment you will complete the same task over many trials.</p>" 
     	+ "<p>In each section, will hear a short cadence played on the piano followed by one more more muscial tones.</p>" 
         + "<p>After hearing the tone or tones, you will be asked to respond which tone(s) you heard in moveable do notation as quickly and accurately as possible.</p>"         
-        + "<p>There will be FIVE waves of tones, each corresponding to the number of tones you are asked to recall. This way, you will always know how many tones you need to respond with.</p>"         
+        + "<p>There will be SIX blocks in this experiment, each corresponding to the number of tones you are asked to recall. This way, you will always know how many tones you need to respond with.</p>"         
         + "<p>The next section will provide an example so you understand the task.</p>",
 	"<p>If you are ready to begin the example, please press NEXT.</p>"],
 
@@ -84,7 +84,8 @@ timeline.push(visual_melody_instructions_block);
 	    "<p>If you do not understand the task, please close the web browser. Feel free to try the task, but participants who score below chance accuracy in the first block will be removed from the analysis.</p>",
           "<p>The experiment consists of SIX blocks where you will be asked to recall either 1,2,3,5,7, or 9 notes in a block.</p>" 
 	+ "<p>As the sequences of notes get longer, please do your best even though you may not be able to perfectly complete the task.</p>" 
-    	+ "<p>Trials are limited to 20 seconds, so the maximum amount of time it will take to complete this is experiment given that there are SIX blocks is XX minutes. (20 seconds * 39 Stimuli = 780 seconds = 13 minutes)</p>" 
+	+ "<p>In each block, you will be asked to remember the same number of items.</p>" 
+    	+ "<p>Trials are limited to 20 seconds, so the maximum amount of time it will take to complete this is experiment given that there are SIX blocks is 30 minutes.</p>" 
         + "<p>Thank you very much for your time!</p>"],
 
     show_clickable_nav: true
@@ -103,7 +104,7 @@ var oneblock = {
     stimulus: jsPsych.timelineVariable('melody'),
     choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
     trial_duration: 20000,
-    response_ends_trial: false,
+    response_ends_trial: true,
     prompt: "<p>Which tone was played after the cadence?</p>"
 
 		}
@@ -162,9 +163,8 @@ var oneblock = {
 
   var visual_melody_instructions_block_2 = {
     type: 'instructions',
-    pages: ["<p>Thank you for completing the first set of responses!</p>" +
-	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>TWO</b> notes</p>",
-         "<p>Please remember to just do your best!</p>",
+    pages: ["<p>Thank you for completing the first block of responses!</p>" +
+	    "<p>Take a second to rest if you need! In the NEXT portion of this experiment you will do the same task, but with <b>TWO</b> notes! From this point on, the piano will always play in the same key and there are only FIVE trials per block. Please do not worry about reporting the correct range, just the scale degree!</p><p>Please remember to just do your best!</p>",
 	"<p>If you are ready to begin the example, please press NEXT.</p>"],
 
     show_clickable_nav: true
@@ -209,7 +209,8 @@ var twoblock = {
     { melody: 'new_stimuli/mp3/melody_^5_^1+_.mp3' },
     { melody: 'new_stimuli/mp3/melody_^2_v7-_.mp3' },
     { melody: 'new_stimuli/mp3/melody_^1_^2+_.mp3' }
-  ]
+  ], 
+	randomize_order: true
 }
 
 
@@ -270,10 +271,12 @@ var threeblock = {
   timeline_variables: [
     { melody: 'new_stimuli/mp3/melody_6_^1_v5_.mp3' },
     { melody: 'new_stimuli/mp3/melody_^1_v6_v5+_.mp3' },
-    { melody: 'new_stimuli/mp3/new_stimuli/mp3/melody_1_v1+_^2_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_1_v1+_^2_.mp3' },
     { melody: 'new_stimuli/mp3/melody_v1_v7-_^7_.mp3' },
     { melody: 'new_stimuli/mp3/melody_v3_v2_v1_.mp3' }
-  ]
+  ], 
+	randomize_order: true
+
 }
 
 timeline.push(threeblock)
@@ -284,7 +287,7 @@ var visual_melody_instructions_block_5 = {
     type: 'instructions',
     pages: ["<p>Thank you for completing the first set of responses!</p>" +
 	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>FIVE</b> notes</p>",
-         "<p>Please remember to just do your best!</p>",
+         "<p>Please remember to just do your best!</p><p>Note that there are FIVE tones to be remembered in this block!</p>",
 	"<p>If you are ready to begin the example, please press NEXT.</p>"],
 
     show_clickable_nav: true
@@ -357,7 +360,9 @@ var fiveblock = {
     { melody: 'new_stimuli/mp3/melody_v5_^6+_^7_^1_5_.mp3' },
     { melody: 'new_stimuli/mp3/melody_v5-_v3_3_^4+_v3_.mp3' },
     { melody: 'new_stimuli/mp3/melody_^6_v4_v3_^4_^5_.mp3' },
-  ]
+  ], 
+	randomize_order: true
+
 }
 
 timeline.push(fiveblock)
@@ -459,7 +464,9 @@ var sevenblock = {
     { melody: 'new_stimuli/mp3/melody_v1_^2_v1_v7_^1_^3_v2_.mp3' },
     { melody: 'new_stimuli/mp3/melody_^6_v5+_v4_^5+_v3_v1_v7-_.mp3' },
     { melody: 'new_stimuli/mp3/melody_^4_v6-_v5-_^6-_^4_v2-_2-_.mp3' },
-  ]
+  ], 
+	randomize_order: true
+
 }
 
 timeline.push(sevenblock)
@@ -577,7 +584,9 @@ var nineblock = {
     { melody: 'new_stimuli/mp3/melody_^3_^4_v2_v7_^1_^2_^3_3_^4_.mp3' },
     { melody: 'new_stimuli/mp3/melody_v5_v4_v6+_^7_^3+_v3_v2_v5_^4_.mp3' },
     { melody: 'new_stimuli/mp3/melody_v7_v6_v5_^6_v5_v4_^5_^6_v5_.mp3' },
-  ]
+  ], 
+	randomize_order: true
+
 }
 
 timeline.push(nineblock)
@@ -612,6 +621,7 @@ function saveData(name, data){
 
 jsPsych.init({
    timeline: timeline,
+   show_progress_bar: true,
    preload_audio:audio,
    on_finish: function() { saveData(subject_id,jsPsych.data.get().csv());}
     });
