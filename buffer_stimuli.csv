@@ -1,25 +1,25 @@
 Count,Pattern,Gram,quintile,DOUBLED,Created
 1071,v2 v1 ,Two,1,YES,NA
-1046,v3 v2 ,Two,1,NO,
-855,v4 v3 ,Two,1,NO,
+1046,v3 v2 ,Two,1,NO,YES
+855,v4 v3 ,Two,1,NO,YES
 561,v3 v2 v1 ,Three,1,YES,NA
-506,v4 v3 v2 ,Three,1,NO,
-427,v5 v4 v3 ,Three,1,NO,
-154,v5 v4 v3 v2 v1 ,Five,1,NO,
-148,^6 v5 v4 v3 v2 ,Five,1,NO,
-86,^5 ^6 v5 v4 v3 ,Five,1,NO,
+506,v4 v3 v2 ,Three,1,NO,YES
+427,v5 v4 v3 ,Three,1,NO,YES
+154,v5 v4 v3 v2 v1 ,Five,1,NO,YES
+148,^6 v5 v4 v3 v2 ,Five,1,NO,YES
+86,^5 ^6 v5 v4 v3 ,Five,1,NO,YES
 45,^4 ^5 ^6 v5 v4 v3 v2 ,Seven,1,YES,NA
-42,^5 ^6 v5 v4 v3 v2 v1 ,Seven,1,NO,
-32,^1 v7 v6 v5 v4 v3 v2 ,Seven,1,NO,
+42,^5 ^6 v5 v4 v3 v2 v1 ,Seven,1,NO,YES
+32,^1 v7 v6 v5 v4 v3 v2 ,Seven,1,NO,YES
 17,^2 v7- ,Two,2,YES,NA
-17,^5+ ^7 ,Two,2,NO,
-17,3 ^6 ,Two,2,NO,
+17,^5+ ^7 ,Two,2,NO,Too Minor
+17,3 ^6 ,Two,2,NO,YES
 14,^3 ^4 ^5 ^6 v5 v4 v3 v2 v1 ,Nine,1,YES,NA
-13,^5 ^6 v5 v4 v3 v2 v1 ^2 ^3 ,Nine,1,NO,
-12,^2 ^3 ^4 ^5 ^6 v5 v4 v3 v2 ,Nine,1,NO,
+13,^5 ^6 v5 v4 v3 v2 v1 ^2 ^3 ,Nine,1,NO,YES
+12,^2 ^3 ^4 ^5 ^6 v5 v4 v3 v2 ,Nine,1,NO,YES
 6,^1 ^2+ ,Two,3,YES,NA
-6,^3 v4+ ,Two,3,NO,
-5,v7 v3 ,Two,3,NO,
+6,^3 v4+ ,Two,3,NO,YES
+5,v7 v3 ,Two,3,NO,YES
 4,1 v1+ ^2 ,Three,2,YES,NA
-4,1 v7- 7- ,Three,2,NO,
+4,1 v7- 7- ,Three,2,NO,YES
 4,v2 v5 ^3 ,Three,2,NO,
