@@ -86,6 +86,7 @@ timeline.push(visual_melody_instructions_block);
 	+ "<p>As the sequences of notes get longer, please do your best even though you may not be able to perfectly complete the task.</p>" 
 	+ "<p>In each block, you will be asked to remember the same number of items.</p>" 
 	+ "<p>Please feel free to sing to yourself to figure out what the notes are.</p>" 
+	+ "<p>We encourage you to use headphones, but please report at the end of the experiment what you did listen with.</p>" 
 	+ "<p>When the entire experiment is over, you will be asked to report on strategies you used to complete this task.</p>" 
     	+ "<p>Trials are limited to 20 seconds, so the maximum amount of time it will take to complete this is experiment given that there are SIX blocks is 30 minutes.</p>" 
         + "<p>Thank you very much for your time!</p>"],
@@ -167,7 +168,7 @@ timeline.push(oneblock);
     type: 'instructions',
     pages: ["<p>Thank you for completing the first block of responses!</p>" +
 	    "<p>Take a second to rest if you need! In the NEXT portion of this experiment you will do the same task, but with <b>TWO</b> notes! From this point on, the piano will always play in the same key and there are only FIVE trials per block. Please do not worry about reporting the correct range, just the scale degree!</p><p>Please remember to just do your best!</p>",
-	"<p>If you are ready to begin the example, please press NEXT.</p>"],
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
 
     show_clickable_nav: true
 		};
@@ -230,7 +231,7 @@ timeline.push(twoblock)
     pages: ["<p>Thank you for completing the second set of responses!</p>" +
 	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>THREE</b> notes</p>",
          "<p>Please remember to just do your best!!</p>",
-	"<p>If you are ready to begin the example, please press NEXT.</p>"],
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
     show_clickable_nav: true
 		};
 
@@ -299,7 +300,7 @@ var visual_melody_instructions_block_5 = {
     pages: ["<p>Thank you for completing the first set of responses!</p>" +
 	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>FIVE</b> notes</p>",
          "<p>Please remember to just do your best!</p><p>Note that there are FIVE tones to be remembered in this block!</p>",
-	"<p>If you are ready to begin the example, please press NEXT.</p>"],
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
 
     show_clickable_nav: true
 		};
@@ -388,7 +389,7 @@ var visual_melody_instructions_block_7 = {
     pages: ["<p>Thank you for completing the first set of responses!</p>" +
 	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>SEVEN</b> notes</p>",
          "<p>Please remember to just do your best!.</p>",
-	"<p>If you are ready to begin the example, please press NEXT.</p>"],
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
 
     show_clickable_nav: true
 		};
@@ -494,7 +495,7 @@ var visual_melody_instructions_block_9 = {
     pages: ["<p>Thank you for completing the first set of responses!</p>" +
 	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>NINE</b> notes</p>",
          "<p>Please remember to just do your best!</p>",
-	"<p>If you are ready to begin the example, please press NEXT.</p>"],
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
 
     show_clickable_nav: true
 		};
@@ -634,7 +635,13 @@ var piano = {
   questions: [{prompt: "Did you use any external reference (like playing on a piano) to help you figure out the answers?"}]
 };
 
-timeline.push(strat,thoughts,piano)
+var headphones = {
+  type: 'survey-text',
+  questions: [{prompt: "Were you using headphones or listening through your computer speakrs?"}]
+};
+
+
+timeline.push(strat,thoughts,piano,headphones)
 
 
     var bye_block = {
