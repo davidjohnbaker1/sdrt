@@ -37,6 +37,16 @@ patterns %>%
 
 write_csv(x = cogmir_stimuli_short,path = "cogmir_stimuli_short.csv")
 
+patterns %>%
+  group_by(Gram) %>%
+  mutate(quintile = ntile(n = 5)) %>%
+  group_by(Gram,quintile)  %>%
+  slice(1:3) %>%
+  filter(Count > 2) %>%
+  arrange(-Count) -> cogmir_stimuli_short_plus
+
+write_csv(x = cogmir_stimuli_short_plus,path = "cogmir_stimuli_short_plus.csv")
+
 #--------------------------------------------------
 # Export Current List of Degs
 # Make them humdrum spines 
