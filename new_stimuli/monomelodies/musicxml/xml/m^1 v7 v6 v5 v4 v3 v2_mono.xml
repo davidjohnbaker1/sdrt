@@ -4,7 +4,7 @@
   <identification>
     <encoding>
       <software>MuseScore 3.0.1</software>
-      <encoding-date>2019-07-08</encoding-date>
+      <encoding-date>2019-07-09</encoding-date>
       <supports element="accidental" type="yes"/>
       <supports element="beam" type="yes"/>
       <supports element="print" attribute="new-page" type="yes" value="yes"/>
@@ -37,12 +37,12 @@
       </score-part>
     </part-list>
   <part id="P1">
-    <measure number="1" width="418.54">
+    <measure number="1" width="300.56">
       <print>
         <system-layout>
           <system-margins>
             <left-margin>0.00</left-margin>
-            <right-margin>-0.00</right-margin>
+            <right-margin>568.65</right-margin>
             </system-margins>
           <top-system-distance>70.00</top-system-distance>
           </system-layout>
@@ -61,7 +61,17 @@
           <line>2</line>
           </clef>
         </attributes>
-      <note default-x="79.27" default-y="-20.00">
+      <note default-x="79.27" default-y="-15.00">
+        <pitch>
+          <step>C</step>
+          <octave>5</octave>
+          </pitch>
+        <duration>1</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        </note>
+      <note default-x="134.19" default-y="-20.00">
         <pitch>
           <step>B</step>
           <octave>4</octave>
@@ -71,7 +81,7 @@
         <type>quarter</type>
         <stem>down</stem>
         </note>
-      <note default-x="163.69" default-y="-25.00">
+      <note default-x="189.11" default-y="-25.00">
         <pitch>
           <step>A</step>
           <octave>4</octave>
@@ -81,19 +91,9 @@
         <type>quarter</type>
         <stem>up</stem>
         </note>
-      <note default-x="248.10" default-y="-30.00">
+      <note default-x="244.03" default-y="-30.00">
         <pitch>
           <step>G</step>
-          <octave>4</octave>
-          </pitch>
-        <duration>1</duration>
-        <voice>1</voice>
-        <type>quarter</type>
-        <stem>up</stem>
-        </note>
-      <note default-x="332.52" default-y="-25.00">
-        <pitch>
-          <step>A</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
@@ -102,18 +102,8 @@
         <stem>up</stem>
         </note>
       </measure>
-    <measure number="2" width="349.27">
-      <note default-x="10.00" default-y="-30.00">
-        <pitch>
-          <step>G</step>
-          <octave>4</octave>
-          </pitch>
-        <duration>1</duration>
-        <voice>1</voice>
-        <type>quarter</type>
-        <stem>up</stem>
-        </note>
-      <note default-x="94.42" default-y="-35.00">
+    <measure number="2" width="241.41">
+      <note default-x="10.00" default-y="-35.00">
         <pitch>
           <step>F</step>
           <octave>4</octave>
@@ -123,9 +113,9 @@
         <type>quarter</type>
         <stem>up</stem>
         </note>
-      <note default-x="178.84" default-y="-30.00">
+      <note default-x="65.20" default-y="-40.00">
         <pitch>
-          <step>G</step>
+          <step>E</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
@@ -133,21 +123,9 @@
         <type>quarter</type>
         <stem>up</stem>
         </note>
-      <note default-x="263.25" default-y="-25.00">
+      <note default-x="120.41" default-y="-45.00">
         <pitch>
-          <step>A</step>
-          <octave>4</octave>
-          </pitch>
-        <duration>1</duration>
-        <voice>1</voice>
-        <type>quarter</type>
-        <stem>up</stem>
-        </note>
-      </measure>
-    <measure number="3" width="342.80">
-      <note default-x="10.00" default-y="-30.00">
-        <pitch>
-          <step>G</step>
+          <step>D</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
@@ -160,12 +138,6 @@
         <duration>1</duration>
         <voice>1</voice>
         <type>quarter</type>
-        </note>
-      <note>
-        <rest/>
-        <duration>2</duration>
-        <voice>1</voice>
-        <type>half</type>
         </note>
       <barline location="right">
         <bar-style>light-heavy</bar-style>
