@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+  <head>
+<!--These are all the original plugins for it to work locally -->
+    <script src="jspsych.js"></script>
+    <script src="plugins/jspsych-instructions.js"></script>
+    <script src="plugins/jspsych-audio-button-response.js"></script>
+    <script src="plugins/jspsych-audio-keyboard-response.js"></script>
+    <script src="plugins/jspsych-html-button-response.js"></script>
+    <script src="poldrack_plugins/jspsych-single-stim-button.js"></script>
+    <script src="plugins/jspsych-survey-text.js"></script>
+    <script src="audiopreload.js"></script>
+    <script src="demographic_questions.js"></script>
+
+<!--These are all the Pavolvia Plugins that I use with new path  -->
+    <script src="lib/vendors/jspsych.js"></script>
+    <script src="lib/vendors/plugins/jspsych-instructions.js"></script>
+    <script src="lib/vendors/plugins/jspsych-audio-button-response.js"></script>
+    <script src="lib/vendors/plugins/jspsych-audio-keyboard-response.js"></script>
+    <script src="lib/vendors/plugins/jspsych-html-button-response.js"></script>
+    <script src="lib/vendors/poldrack_plugins/jspsych-single-stim-button.js"></script>
+    <script src="lib/vendors/plugins/jspsych-survey-text.js"></script>
+    <script src="lib/vendors/audiopreload.js"></script>
+    <script src="lib/vendors/demographic_questions.js"></script>
+
+<!--These are all the Pavolvia Plugins -->
+
+    <script type="text/javascript" src="lib/vendors/jquery-2.2.0.min.js"></script> 
+    <script type="text/javascript" src="lib/jspsych-pavlovia-3.0.0.js"></script>
+
+    <link rel="stylesheet" href="jspsych.css"></link>
+  </head>
+  <body></body>
+  <script>
+
+/* Creates Blank Timeline to Push to */ 
+
+  var timeline = [];
+
+/* init connection with pavlovia.org */
+var pavlovia_init = {
+	type: "pavlovia",
+	command: "init"
+};
+
+timeline.push(pavlovia_init);
+
+/* Welcome and IRB */
+
+    var welcome_block = {
+    type: 'instructions',
+    pages: ["<p>Welcome to this experiment!</p>" +
+	    "<p> Please click NEXT to start the survey!</p>",
+	
+          "<p>Before collecting any data we are required to obtain a confirmation of consent all for participants.</p>" 
+    	+ "<p>Please read the following statement: </p>" 
+        + "<p>This experiment will ask you to listen to small musical excerpts then respond based on what you hear. The experiment is currently designed so that only trained musicians that understand moveable-do solfege can participate. You may choose not to participate or to withdraw from the study at any time without penalty or loss of any benefit.  "
+   	+ "All data will be made anonymous and all efforts will be made to keep data private and secure. For questions concerning participant rights, feel free"
+    	+ " to contact Dr. Dennis Landin, chair of the Institutional Review Board at either (225)-578-8692 or irb@lsu.edu.</p>"
+        + "<p> If you are willing to partake in this study, please press NEXT and the survey will begin." ,
+
+      	   '<p>Thank you for choosing to participate in this survey!</p>'  
+    	        + "<p>Please answer the following survey questions about your aural skills background.</p>"],
+
+    show_clickable_nav: true
+  }
+
+timeline.push(welcome_block);
+
+/* Demographic Information  */
+
+timeline.push(survey_trial_1, survey_trial_2, survey_trial_3, survey_trial_4, survey_trial_5, survey_trial_6);
+
+/* Instructions  */
+
+  var visual_melody_instructions_block = {
+    type: 'instructions',
+    pages: ["<p>Thank you for completing the first part of this experiment!</p>" +
+	    "<p>Take a second to rest if you need, the NEXT portion of this survey will ask you to complete a very specific musical task.</p>",
+          "<p>In this experiment you will complete the same task over many trials.</p>" 
+    	+ "<p>In each section, will hear a short cadence played on the piano followed by one more more muscial tones.</p>" 
+        + "<p>After hearing the tone or tones, you will be asked to respond which tone(s) you heard in moveable do notation as quickly and accurately as possible.</p>"         
+        + "<p>There will be SIX blocks in this experiment, each corresponding to the number of tones you are asked to recall. This way, you will always know how many tones you need to respond with.</p>"         
+        + "<p>The next section will provide an example so you understand the task.</p>",
+	"<p>If you are ready to begin the example, please press NEXT.</p>"],
+
+    show_clickable_nav: true
+		};
+
+timeline.push(visual_melody_instructions_block);
+
+  timeline.push({
+    type: 'audio-button-response',
+    stimulus: 'stimuli/long/c-do.mp3',
+    choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+    prompt: "<p>Which tone was played after the cadence?</p><p>The answer is 'Do' or '1'.</p>"
+  });
+
+  timeline.push({
+    type: 'audio-button-response',
+    stimulus: 'stimuli/long/a-le.mp3',
+    choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+    prompt: "<p>Which tone was played after the cadence?</p><p>The answer is 'Le' or 'b6'.</p>"
+  });
+
+  var check = {
+    type: 'instructions',
+    pages: ["<p>If you understand the task, please begin!</p>" +
+	    "<p>If you do not understand the task, please close the web browser. Feel free to try the task, but participants who score below chance accuracy in the first block will be removed from the analysis.</p>",
+          "<p>The experiment consists of SIX blocks where you will be asked to recall either 1, 2, 3, 5, 7, or 9 notes in a block.</p>" 
+	+ "<p>As the sequences of notes get longer, please do your best even though you may not be able to perfectly complete the task.</p>" 
+	+ "<p>In each block, you will be asked to remember the same number of items.</p>" 
+	+ "<p>Please feel free to sing to yourself to figure out what the notes are.</p>" 
+	+ "<p>We encourage you to use headphones, but please report at the end of the experiment what you did listen with.</p>" 
+	+ "<p>When the entire experiment is over, you will be asked to report on strategies you used to complete this task.</p>" 
+    	+ "<p>Trials are limited to 20 seconds, so the maximum amount of time it will take to complete this is experiment given that there are SIX blocks is 30 minutes.</p>" 
+        + "<p>Thank you very much for your time!</p>"],
+
+    show_clickable_nav: true
+		};
+
+timeline.push(check);
+
+/* BEGIN EXPERIMENTAL BLOCKS */ 
+
+/* 1 Block  */ 
+
+var oneblock = {
+	timeline: [
+		{
+    type: 'audio-button-response',
+    stimulus: jsPsych.timelineVariable('melody'),
+    choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+    trial_duration: 20000,
+    response_ends_trial: true,
+    prompt: "<p>Which tone was played after the cadence?</p>"
+
+		}
+	],
+	timeline_variables : [
+	{ melody: 'stimuli/long/a-do.mp3' },
+	{ melody: 'stimuli/long/a-do8.mp3' },
+	{ melody: 'stimuli/long/a-fa.mp3' },
+	{ melody: 'stimuli/long/a-fi.mp3' },
+	{ melody: 'stimuli/long/a-la.mp3' },
+	{ melody: 'stimuli/long/a-le.mp3' },
+	{ melody: 'stimuli/long/a-me.mp3' },
+	{ melody: 'stimuli/long/a-mi.mp3' },
+	{ melody: 'stimuli/long/a-ra.mp3' },
+	{ melody: 'stimuli/long/a-re.mp3' },
+	{ melody: 'stimuli/long/a-sol.mp3' },
+	{ melody: 'stimuli/long/a-te.mp3' },
+	{ melody: 'stimuli/long/a-ti.mp3' },
+	{ melody: 'stimuli/long/c-do.mp3' },
+	{ melody: 'stimuli/long/c-do8.mp3' },
+	{ melody: 'stimuli/long/c-fa.mp3' },
+	{ melody: 'stimuli/long/c-fi.mp3' },
+	{ melody: 'stimuli/long/c-la.mp3' },
+	{ melody: 'stimuli/long/c-le.mp3' },
+	{ melody: 'stimuli/long/c-me.mp3' },
+	{ melody: 'stimuli/long/c-mi.mp3' },
+	{ melody: 'stimuli/long/c-ra.mp3' },
+	{ melody: 'stimuli/long/c-re.mp3' },
+	{ melody: 'stimuli/long/c-sol.mp3' },
+	{ melody: 'stimuli/long/c-ti.mp3' },
+	{ melody: 'stimuli/long/e-di.mp3' },
+	{ melody: 'stimuli/long/e-do.mp3' },
+	{ melody: 'stimuli/long/e-do8.mp3' },
+	{ melody: 'stimuli/long/e-fa.mp3' },
+	{ melody: 'stimuli/long/e-fi.mp3' },
+	{ melody: 'stimuli/long/e-la.mp3' },
+	{ melody: 'stimuli/long/e-le.mp3' },
+	{ melody: 'stimuli/long/e-me.mp3' },
+	{ melody: 'stimuli/long/e-mi.mp3' },
+	{ melody: 'stimuli/long/e-ra.mp3' },
+	{ melody: 'stimuli/long/e-re.mp3' }, 
+	{ melody: 'stimuli/long/e-sol.mp3' },
+	{ melody: 'stimuli/long/e-te.mp3' },
+	{ melody: 'stimuli/long/e-ti.mp3' },
+	{ melody: 'stimuli/long/c-do.mp3' }, 
+	{ melody: 'stimuli/long/c-do.mp3' }
+],
+	randomize_order: true
+
+}
+
+timeline.push(oneblock);
+
+
+/* TWO  BREAK BLOCK  */
+
+  var visual_melody_instructions_block_2 = {
+    type: 'instructions',
+    pages: ["<p>Thank you for completing the first block of responses!</p>" +
+	    "<p>Take a second to rest if you need! In the NEXT portion of this experiment you will do the same task, but with <b>TWO</b> notes! From this point on, the piano will always play in the same key and there are only FIVE trials per block. Please do not worry about reporting the correct range, just the scale degree!</p><p>Please remember to just do your best!</p>",
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
+
+    show_clickable_nav: true
+		};
+
+timeline.push(visual_melody_instructions_block_2);
+
+/* TWO BLOCK */ 
+
+var twoblock = {
+  timeline: [
+    {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('melody'),
+      choices: jsPsych.NO_KEYS,
+      trial_ends_after_audio: true,
+      prompt: "Listen.",
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played first after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 1,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played second after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 2,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    }
+    
+  ],
+  timeline_variables: [
+    { melody: 'new_stimuli/mp3/melody_3_^6_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v7_v3_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^3_v4+_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v3_v2_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v4_v3_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v2_v1_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5_v1+_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^5_^1+_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^2_v7-_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^1_^2+_.mp3' }
+  ], 
+	randomize_order: true
+}
+
+
+timeline.push(twoblock)
+
+/* 3 BREAK BLOCK  */
+
+  var visual_melody_instructions_block_3 = {
+    type: 'instructions',
+    pages: ["<p>Thank you for completing the second set of responses!</p>" +
+	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>THREE</b> notes</p>",
+         "<p>Please remember to just do your best!!</p>",
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
+    show_clickable_nav: true
+		};
+
+timeline.push(visual_melody_instructions_block_3);
+
+/* THREE BLOCK  */ 
+
+var threeblock = {
+  timeline: [
+    {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('melody'),
+      choices: jsPsych.NO_KEYS,
+      trial_ends_after_audio: true,
+      prompt: "Listen.",
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played first after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 1,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played second after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 2,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played third after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 3,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    }
+  ],
+  timeline_variables: [
+    { melody: 'new_stimuli/mp3/melody_v2_v5_^3_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v1_v7-_7-_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v4_v3_v2_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5_v4_v3_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_6_^1_v5_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^1_v6_v5+_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_1_v1+_^2_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v1_v7-_^7_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v3_v2_v1_.mp3' }
+  ], 
+	randomize_order: true
+
+}
+
+timeline.push(threeblock)
+
+/* 5 BREAK BLOCK  */
+
+var visual_melody_instructions_block_5 = {
+    type: 'instructions',
+    pages: ["<p>Thank you for completing the first set of responses!</p>" +
+	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>FIVE</b> notes</p>",
+         "<p>Please remember to just do your best!</p><p>Note that there are FIVE tones to be remembered in this block!</p>",
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
+
+    show_clickable_nav: true
+		};
+
+timeline.push(visual_melody_instructions_block_5);
+
+
+/* FIVE BLOCK  */ 
+
+var fiveblock = {
+
+  timeline: [
+    {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('melody'),
+      choices: jsPsych.NO_KEYS,
+      trial_ends_after_audio: true,
+      prompt: "Listen.",
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played first after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 1,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played second after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 2,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played third after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 3,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played fourth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 4,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played fifth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 5,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    }  
+	],
+  timeline_variables: [
+    { melody: 'new_stimuli/mp3/melody_^5_^6_v5_v4_v3_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^6_v5_v4_v3_v2_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5_v4_v3_v2_v1 _buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v2_2_^3_^4_v2_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5_v4_v3_v2_v1_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5_^6+_^7_^1_5_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5-_v3_3_^4+_v3_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^6_v4_v3_^4_^5_.mp3' },
+  ], 
+	randomize_order: true
+
+}
+
+timeline.push(fiveblock)
+
+/* SEVEN BLOCK  */ 
+
+var visual_melody_instructions_block_7 = {
+    type: 'instructions',
+    pages: ["<p>Thank you for completing the first set of responses!</p>" +
+	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>SEVEN</b> notes</p>",
+         "<p>Please remember to just do your best!.</p>",
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
+
+    show_clickable_nav: true
+		};
+
+timeline.push(visual_melody_instructions_block_7);
+
+
+var sevenblock = {
+
+  timeline: [
+    {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('melody'),
+      choices: jsPsych.NO_KEYS,
+      trial_ends_after_audio: true,
+      prompt: "Listen.",
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played first after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 1,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played second after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 2,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played third after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 3,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played fourth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 4,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played fifth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 5,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played sixth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 6,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played seventh after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 7,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    }
+
+
+  ],
+  timeline_variables: [
+    { melody: 'new_stimuli/mp3/melody_^5_^6_v5_v4_v3_v2_v1_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^1_v7_v6_v5_v4_v3_v2_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_1_^3_v1_^5_v3_v2_^3_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^4_^5_^6_v5_v4_v3_v2_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v1_^2_v1_v7_^1_^3_v2_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^6_v5+_v4_^5+_v3_v1_v7-_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^4_v6-_v5-_^6-_^4_v2-_2-_.mp3' },
+  ], 
+	randomize_order: true
+
+}
+
+timeline.push(sevenblock)
+
+/* NINE BLOCK  */ 
+
+var visual_melody_instructions_block_9 = {
+    type: 'instructions',
+    pages: ["<p>Thank you for completing the first set of responses!</p>" +
+	    "<p>Take a second to rest if you need, in the NEXT portion of this experiment you will do the same task, but with <b>NINE</b> notes</p>",
+         "<p>Please remember to just do your best!</p>",
+	"<p>If you are ready to begin the trial, please press NEXT.</p>"],
+
+    show_clickable_nav: true
+		};
+
+timeline.push(visual_melody_instructions_block_9);
+
+
+var nineblock = {
+
+  timeline: [
+    {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('melody'),
+      choices: jsPsych.NO_KEYS,
+      trial_ends_after_audio: true,
+      prompt: "Listen.",
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played first after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 1,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played second after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 2,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played third after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 3,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played fourth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 4,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played fifth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 5,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played sixth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 6,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played seventh after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 7,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played eight after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 8,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    },
+    {
+      type: 'html-button-response',
+      stimulus: "<p>Which tone was played nineth after the cadence?</p>",
+      choices: ['Do |  1', 'Ra | b2', 'Re | 2', 'Me | b3', 'Mi | 3', 'Fa | 4', 'Fi | #4', 'Sol | 5', 'Le | b6', 'La | 6', 'Te | b7', 'Ti | 7', 'Do | 1'],
+      data: {
+        response_sequence: 9,
+        melody: jsPsych.timelineVariable('melody')
+      }
+    }
+  ],
+  timeline_variables: [
+    { melody: 'new_stimuli/mp3/melody_^5_^6_v5_v4_v3_v2_v1_^2_^3_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^2_^3_^4_^5_^6_v5_v4_v3_v2_buffer.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^2_^4_v3_v2_v1_v3_v2+_^3_^5+_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^3_^4_^5 _^6_v5_v4_v3_v2_v1_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_^3_^4_v2_v7_^1_^2_^3_3_^4_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v5_v4_v6+_^7_^3+_v3_v2_v5_^4_.mp3' },
+    { melody: 'new_stimuli/mp3/melody_v7_v6_v5_^6_v5_v4_^5_^6_v5_.mp3' },
+  ], 
+	randomize_order: true
+
+}
+
+timeline.push(nineblock)
+
+/* Data Collection End  */ 
+
+
+var subject_id = Math.floor(Math.random()*100000);
+        jsPsych.data.addProperties({
+                     subject: subject_id,
+                });
+
+/* Strat and Thoughts */ 
+
+var strat = {
+  type: 'survey-text',
+  questions: [{prompt: "What strategies did you use to complete this task?"}]
+};
+
+var thoughts = {
+  type: 'survey-text',
+  questions: [{prompt: "Do you have any opinions or thoughts you would like to share about this experiment?"}]
+};
+
+var piano = {
+  type: 'survey-text',
+  questions: [{prompt: "Did you use any external reference (like playing on a piano) to help you figure out the answers?"}]
+};
+
+var headphones = {
+  type: 'survey-text',
+  questions: [{prompt: "Were you using headphones or listening through your computer speakrs?"}]
+};
+
+
+timeline.push(strat,thoughts,piano,headphones)
+
+
+    var bye_block = {
+    type: 'instructions',
+    pages: [
+	"<p>Thank you very much for taking part in this !</p><p>PLEASE REMEMBER TO PRESS NEXT BELOW TO ENSURE YOUR DATA IS SAVED.</p><p>If you have any questions or would like to talk about this research, please email David at davidjohnbaker1 [at] gmail DOT com.</p>"],
+
+    show_clickable_nav: true
+  }
+
+    timeline.push(bye_block);
+
+/* Online Data Save Function 
+
+function saveData(name, data){
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify({filename: name, filedata: data}));
+}
+*/
+
+/* finish connection with pavlovia.org */
+
+var pavlovia_finish = {
+	type: "pavlovia",
+	command: "finish"
+	participantId: subject_id
+	};
+
+timeline.push(pavlovia_finish);
+
+jsPsych.init({
+   timeline: timeline,
+   show_progress_bar: true,
+   preload_audio:audio,
+   on_finish: function() { saveData(subject_id,jsPsych.data.get().csv());}
+    });
+
+/* Local Save */
+  jsPsych.init({
+    timeline: timeline,
+    preload_audio: audio,
+    use_webaudio: true,
+    on_finish: function(){jsPsych.data.get().localSave('csv','mydata.csv');}
+  });
+
+  </script>
+</html>
+
