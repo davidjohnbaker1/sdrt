@@ -2,13 +2,16 @@
 # Extract Demographic and Response Data for
 # long_sdrt.html 
 # David John Baker 
+
+# MAKE ME A LOOPING FUNCTION!!!!
+
 #--------------------------------------------------
 # Read in Libraries 
 library(tidyverse)
 
 #--------------------------------------------------
 # Import Data 
-drafter <- read_csv("data/drafter.csv")
+drafter <- read_csv("001.csv")
 View(drafter)
 #======================================================================================================
 # Get Survey Questions
