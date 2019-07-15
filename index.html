@@ -13,7 +13,7 @@
     <script src="audiopreload.js"></script>
     <script src="demographic_questions.js"></script>
 
-<!--These are all the Pavolvia Plugins that I use with new path  -->
+<!--These are all the Pavolvia Plugins that I use with new path  
     <script src="lib/vendors/jspsych.js"></script>
     <script src="lib/vendors/plugins/jspsych-instructions.js"></script>
     <script src="lib/vendors/plugins/jspsych-audio-button-response.js"></script>
@@ -24,11 +24,9 @@
     <script src="lib/vendors/audiopreload.js"></script>
     <script src="lib/vendors/demographic_questions.js"></script>
 
-<!--These are all the Pavolvia Plugins -->
-
     <script type="text/javascript" src="lib/vendors/jquery-2.2.0.min.js"></script> 
     <script type="text/javascript" src="lib/jspsych-pavlovia-3.0.0.js"></script>
-
+-->
     <link rel="stylesheet" href="jspsych.css"></link>
   </head>
   <body></body>
@@ -38,13 +36,13 @@
 
   var timeline = [];
 
-/* init connection with pavlovia.org */
+/* init connection with pavlovia.org 
 var pavlovia_init = {
 	type: "pavlovia",
 	command: "init"
 };
-
-timeline.push(pavlovia_init);
+*/
+//timeline.push(pavlovia_init);
 
 /* Welcome and IRB */
 
@@ -691,22 +689,24 @@ function saveData(name, data){
 */
 
 /* finish connection with pavlovia.org */
-
+/*
 var pavlovia_finish = {
 	type: "pavlovia",
-	command: "finish"
+	command: "finish",
 	participantId: subject_id
 	};
 
-timeline.push(pavlovia_finish);
+// timeline.push(pavlovia_finish);
+*/
 
+/*
 jsPsych.init({
    timeline: timeline,
    show_progress_bar: true,
    preload_audio:audio,
    on_finish: function() { saveData(subject_id,jsPsych.data.get().csv());}
     });
-
+*/
 /* Local Save */
   jsPsych.init({
     timeline: timeline,
