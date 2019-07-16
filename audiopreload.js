@@ -38,7 +38,6 @@
 		'stimuli/long/e-te.mp3' ,
 		'stimuli/long/e-ti.mp3' ,
 		'stimuli/long/c-do.mp3' , 
-		'stimuli/long/c-do.mp3', 
 		'new_stimuli/mp3/melody_1_^3_v1_^5_v3_v2_^3_.mp3',
 		'new_stimuli/mp3/melody_1_v1+_^2_.mp3',
 		'new_stimuli/mp3/melody_6_^1_v5_.mp3',
@@ -80,7 +79,5 @@
 		'new_stimuli/mp3/melody_v5_v4_v3_buffer.mp3',
 		'new_stimuli/mp3/melody_v5_v4_v3_v2_v1 _buffer.mp3',
 		'new_stimuli/mp3/melody_v7_v3_buffer.mp3'
-
-
 			 ];
 

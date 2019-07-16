@@ -64,11 +64,8 @@ var pavlovia_init = {
     show_clickable_nav: true
   }
 
-timeline.push(welcome_block);
 
 /* Demographic Information  */
-
-timeline.push(survey_trial_1, survey_trial_2, survey_trial_3, survey_trial_4, survey_trial_5, survey_trial_6);
 
 /* Instructions  */
 
@@ -86,6 +83,8 @@ timeline.push(survey_trial_1, survey_trial_2, survey_trial_3, survey_trial_4, su
     show_clickable_nav: true
 		};
 
+timeline.push(welcome_block);
+timeline.push(survey_trial_1, survey_trial_2, survey_trial_3, survey_trial_4, survey_trial_5, survey_trial_6);
 timeline.push(visual_melody_instructions_block);
 
   timeline.push({
@@ -149,7 +148,7 @@ var oneblock = {
 	{ melody: 'stimuli/long/a-re.mp3' },
 	{ melody: 'stimuli/long/a-sol.mp3' },
 	{ melody: 'stimuli/long/a-te.mp3' },
-	{ melody: 'stimuli/long/a-ti.mp3' },
+	{ melody: 'stimuli/long/a-ti.mp3' }, 
 	{ melody: 'stimuli/long/c-do.mp3' },
 	{ melody: 'stimuli/long/c-do8.mp3' },
 	{ melody: 'stimuli/long/c-fa.mp3' },
@@ -162,7 +161,6 @@ var oneblock = {
 	{ melody: 'stimuli/long/c-re.mp3' },
 	{ melody: 'stimuli/long/c-sol.mp3' },
 	{ melody: 'stimuli/long/c-ti.mp3' },
-	{ melody: 'stimuli/long/e-di.mp3' },
 	{ melody: 'stimuli/long/e-do.mp3' },
 	{ melody: 'stimuli/long/e-do8.mp3' },
 	{ melody: 'stimuli/long/e-fa.mp3' },
@@ -175,9 +173,7 @@ var oneblock = {
 	{ melody: 'stimuli/long/e-re.mp3' }, 
 	{ melody: 'stimuli/long/e-sol.mp3' },
 	{ melody: 'stimuli/long/e-te.mp3' },
-	{ melody: 'stimuli/long/e-ti.mp3' },
-	{ melody: 'stimuli/long/c-do.mp3' }, 
-	{ melody: 'stimuli/long/c-do.mp3' }
+	{ melody: 'stimuli/long/e-ti.mp3' } 
 ],
 	randomize_order: true
 
@@ -699,22 +695,22 @@ var pavlovia_finish = {
 // timeline.push(pavlovia_finish);
 */
 
-/*
 jsPsych.init({
    timeline: timeline,
+    use_webaudio: false,
    show_progress_bar: true,
    preload_audio:audio,
    on_finish: function() { saveData(subject_id,jsPsych.data.get().csv());}
     });
-*/
-/* Local Save */
+
+/* Local Save 
   jsPsych.init({
     timeline: timeline,
     preload_audio: audio,
     use_webaudio: true,
     on_finish: function(){jsPsych.data.get().localSave('csv','mydata.csv');}
   });
-
+*/
   </script>
 </html>
 
