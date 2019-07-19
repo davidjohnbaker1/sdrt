@@ -202,7 +202,7 @@ create_multi_data <- function(fns=list.files(pattern=".csv")){
   #--------------------------------------------------
   # Add identifying subject number 
   new_data %>%
-    mutate(subject = drafter$subject[1]) -> new_data
+    mutate(subject = experiment_data$subject[1]) -> new_data
   
   #--------------------------------------------------
   # Clean Up to Match Single Variable 
@@ -224,3 +224,26 @@ create_multi_data <- function(fns=list.files(pattern=".csv")){
   } 
   
 }
+
+#======================================================================================================
+# Creation Scripts
+#--------------------------------------------------
+
+bind_demo_table <- function(){
+  filenames <- list.files(pattern = "demo_data.csv")
+  bigdata <- do.call("rbind", lapply(filenames, read.csv, header = TRUE))
+  write.csv(bigdata,"../current_demo_table.csv")
+}
+
+bind_single_table <- function(){
+  filenames <- list.files(pattern = "single_data.csv")
+  bigdata <- do.call("rbind", lapply(filenames, read.csv, header = TRUE))
+  write.csv(bigdata,"../current_single_table.csv")
+}
+
+bind_multi_table <- function(){
+  filenames <- list.files(pattern = "multi_data.csv")
+  bigdata <- do.call("rbind", lapply(filenames, read.csv, header = TRUE))
+  write.csv(bigdata,"../current_multi_table.csv")
+}
+
