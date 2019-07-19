@@ -5,6 +5,7 @@
 # * Demographic Table
 # * Single Item Table
 # * Multi-Item Table 
+# Bottom Functions make big tables 
 #--------------------------------------------------
 library(tidyverse)
 # Create Demographic Tables 
@@ -28,14 +29,17 @@ create_demo_table <- function(fns=list.files(pattern=".csv")){
     years_teaching <- experiment_data$responses[7]
     #--------------------------------------------------
     # Post 
-    strategies <- experiment_data$responses[297]
-    thoughts <- experiment_data$responses[298]
-    piano <- experiment_data$responses[299]
+    strategies <- experiment_data$responses[294]
+    thoughts <- experiment_data$responses[295]
+    piano <- experiment_data$responses[296]
+    headphones <- experiment_data$responses[297]
+    gender <- experiment_data$responses[298]
+    before <- experiment_data$responses[299]
     #--------------------------------------------------
     # Create Demographic Table 
     
     demo_table <- cbind(subject_id, age, education, AP, weeks_taking, years_teaching,
-                        strategies, thoughts, piano)
+                        strategies, thoughts, piano, headphones, gender, before)
     
     write.table(demo_table,paste0("demo/",substr(fns[i],1,nchar(fns[i])-4),"_demo_data.csv"),sep=",",col.names=TRUE,row.names=FALSE)
     
@@ -55,7 +59,7 @@ create_single_data <- function(fns=list.files(pattern=".csv")){
     # Create Data for Single Trial 
     #--------------------------------------------------
     # Index Out Just Single Trial Rows 
-    single_trial <- experiment_data %>% filter(trial_index >= 11 & trial_index <= 51) 
+    single_trial <- experiment_data %>% filter(trial_index >= 11 & trial_index <= 48) 
     
     #--------------------------------------------------
     # Fix Single Trial SD 
@@ -96,12 +100,11 @@ create_multi_data <- function(fns=list.files(pattern=".csv")){
   
   print(paste("Now Working On File",fns[i]))
   
-  
   #======================================================================================================
   # Do Multi Trial 
   #--------------------------------------------------
   # Add Trial number of notes blocking with fill 
-  multi_trial <- experiment_data %>% filter(trial_index >= 52)
+  multi_trial <- experiment_data %>% filter(trial_index >= 49)
   
   #--------------------------------------------------
   # Create Table that has just what subject pressed and rt associated with trial 
@@ -232,18 +235,18 @@ create_multi_data <- function(fns=list.files(pattern=".csv")){
 bind_demo_table <- function(){
   filenames <- list.files(pattern = "demo_data.csv")
   bigdata <- do.call("rbind", lapply(filenames, read.csv, header = TRUE))
-  write.csv(bigdata,"../current_demo_table.csv")
+  write.csv(bigdata,"../aggregate_data/current_demo_table.csv")
 }
 
 bind_single_table <- function(){
   filenames <- list.files(pattern = "single_data.csv")
   bigdata <- do.call("rbind", lapply(filenames, read.csv, header = TRUE))
-  write.csv(bigdata,"../current_single_table.csv")
+  write.csv(bigdata,"../aggregate_data/current_single_table.csv")
 }
 
 bind_multi_table <- function(){
   filenames <- list.files(pattern = "multi_data.csv")
   bigdata <- do.call("rbind", lapply(filenames, read.csv, header = TRUE))
-  write.csv(bigdata,"../current_multi_table.csv")
+  write.csv(bigdata,"../aggregate_data/current_multi_table.csv")
 }
 

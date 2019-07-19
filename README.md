@@ -4,6 +4,9 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 
 NEXT 
 
+Fix demographic table
+start analysis 
+
 ## Long To Do 
 
 * [X] Host Server 

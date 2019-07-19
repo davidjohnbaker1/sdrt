@@ -9,6 +9,8 @@ library(viridis)
 files <- list.files(path = "downloaded_data/")
 setwd("downloaded_data/")
 
+## TRY THIS FOR DEMOGRAPHIC 
+
 big_table <- files %>%
   map(read_csv) %>%
   reduce(rbind)
