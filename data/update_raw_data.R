@@ -7,12 +7,12 @@ options(readr.num_columns = 0)
 setwd("data/")
 source("../analyses/clean_sdrt_long.R")
 create_demo_table()
-create_single_data() # WARNING HERE 
+create_single_data()
 create_multi_data()
 
 #--------------------------------------------------
 setwd("demo/")
-bind_demo_table() # Warning here 
+bind_demo_table() 
 junk <- dir(pattern="_data") 
 file.remove(junk)
 setwd("..")

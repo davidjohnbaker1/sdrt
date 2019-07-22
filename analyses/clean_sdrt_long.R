@@ -16,6 +16,10 @@ create_demo_table <- function(fns=list.files(pattern=".csv")){
     experiment_data <- read_csv(fns[i])
     
     print(paste("Now Working On File",fns[i]))
+    
+    #--------------------------------------------------
+    # Fix comman Problem
+    experiment_data$responses <- gsub(pattern = ",",replacement = "", experiment_data$responses)
 
     # Get Survey Questions
     #--------------------------------------------------
@@ -29,19 +33,20 @@ create_demo_table <- function(fns=list.files(pattern=".csv")){
     years_teaching <- experiment_data$responses[7]
     #--------------------------------------------------
     # Post 
-    strategies <- experiment_data$responses[294]
-    thoughts <- experiment_data$responses[295]
-    piano <- experiment_data$responses[296]
-    headphones <- experiment_data$responses[297]
-    gender <- experiment_data$responses[298]
-    before <- experiment_data$responses[299]
+    strategies <- experiment_data$responses[295]
+    thoughts <- experiment_data$responses[296]
+    piano <- experiment_data$responses[297]
+    headphones <- experiment_data$responses[298]
+    gender <- experiment_data$responses[299]
+    before <- experiment_data$responses[300]
+    
     #--------------------------------------------------
     # Create Demographic Table 
     
     demo_table <- cbind(subject_id, age, education, AP, weeks_taking, years_teaching,
                         strategies, thoughts, piano, headphones, gender, before)
     
-    write.table(demo_table,paste0("demo/",substr(fns[i],1,nchar(fns[i])-4),"_demo_data.csv"),sep=",",col.names=TRUE,row.names=FALSE)
+    write.table(demo_table,paste0("demo/",substr(fns[i],1,nchar(fns[i])-4),"_demo_data.csv"),sep= "," ,col.names=TRUE,row.names=FALSE)
     
     #--------------------------------------------------  
   }
@@ -82,6 +87,12 @@ create_single_data <- function(fns=list.files(pattern=".csv")){
     single_trial %>%
       select(subject, rt, button_pressed, key, scale_degree, score, stimuli_together) -> single_trial
     
+    #--------------------------------------------------
+    # Fix Null Responses 
+    
+    single_trial$rt[single_trial$rt == "null"] <- "9999"
+    single_trial$rt <- as.numeric(single_trial$rt)
+     
     #--------------------------------------------------
     # This is where you Write this one 
     
