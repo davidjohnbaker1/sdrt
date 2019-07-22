@@ -7,4 +7,4 @@ devtools::install_github("pmcharrison/incon")
 # Try his examples
 library(incon)
 chord <- c(60, 64, 67) # major triad, MIDI note numbers
-incon(chord)
+incon(chord,model = "all")
