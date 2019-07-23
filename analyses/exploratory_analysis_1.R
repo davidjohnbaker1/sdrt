@@ -7,12 +7,23 @@
 library(tidyverse)
 library(viridis)
 library(scales)
+
+
+# Item Plot to Poster 
+# Need to fix scoring of do8 
+# Need to Implement Miller Model and others! 
+# Then run fixed effects 
+# Cum IC of all the Models 
+# Check did not loose stimuli along the way 
+
 #--------------------------------------------------
 # Import Data 
+
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
 single_table <- read_csv("data/aggregate_data/current_single_table.csv")
 multi_table <- read_csv("data/aggregate_data/current_multi_table.csv")
 #--------------------------------------------------
+
 # Single Analyses 
 names(single_table)
 unique(single_table$scale_degree)
@@ -40,9 +51,42 @@ single_table %>%
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
   labs(title = "Scale Degree Reaction Time",
        x = "Scale Degree", 
-       y = "Reaction Time in ms") -> sdrt_big
+       y = "Reaction Time in ms",
+       color = "Score",
+       shape = "Key") -> sdrt_big
 
 sdrt_big
+
+ggsave(filename = "ffh_poster/sdrt_big.png",plot = sdrt_big,device = "png")
+
+#--------------------------------------------------
+# 88533
+
+#--------------------------------------------------
+# Particpant Main Effects 
+single_table %>%
+  filter(rt != 9999) %>%
+  filter(rt >= 5000) %>%
+  group_by(scale_degree,key) %>%
+  mutate(rt_means = mean(rt, na.rm = TRUE), 
+         mean_correct = mean(score, na.rm = TRUE)) %>%
+  filter(scale_degree_f != "NA") %>%
+  ggplot(aes(x = scale_degree_f, y = rt, color = as.factor(key), shape = as.factor(score))) +
+  geom_point() + 
+  theme_minimal() +
+  scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
+  labs(title = "Scale Degree Reaction Time",
+       x = "Scale Degree", 
+       y = "Reaction Time in ms",
+       color = "Key", 
+       shape = "Score") +
+  facet_wrap(~subject)-> sdrt_big_indv
+
+sdrt_big_indv
+
+ggsave(filename = "ffh_poster/sdrt_big_indv.png",
+       plot = sdrt_big_indv,
+       device = "png")
 
 #--------------------------------------------------
 # Average Over SD and Key 
@@ -60,9 +104,34 @@ single_table %>%
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
   labs(title = "Scale Degree Reaction Time",
        x = "Scale Degree", 
-       y = "Reaction Time in ms") -> sdrt_big_key
+       y = "Reaction Time in ms",
+       color = "Key") -> sdrt_big_key
 
 sdrt_big_key
+
+ggsave(filename = "ffh_poster/sdrt_big_key.png",plot = sdrt_big_key,device = "png")
+
+
+single_table %>%
+  filter(rt != 9999) %>%
+  filter(rt >= 5000) %>%
+  group_by(scale_degree, key) %>%
+  mutate(rt_means = mean(rt, na.rm = TRUE), 
+         mean_correct = mean(score, na.rm = TRUE)) %>%
+  filter(scale_degree_f != "NA") %>%
+  ggplot(aes(x = scale_degree_f, y = mean_correct, color = key)) +
+  geom_point() + 
+  theme_minimal() +
+  scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
+  labs(title = "Scale Degree Reaction Time",
+       x = "Scale Degree", 
+       y = "Reaction Time in ms", color = "Key") -> sdrt_big_key_correct
+
+sdrt_big_key_correct
+
+ggsave(filename = "ffh_poster/sdrt_big_key_correct.png",
+       plot = sdrt_big_key_correct,
+       device = "png")
 
 #--------------------------------------------------
 # Average Over Keys 
@@ -77,12 +146,39 @@ single_table %>%
   ggplot(aes(x = scale_degree_f, y = rt_means)) +
   geom_point() + 
   theme_minimal() +
+  scale_y_continuous(labels = comma) +
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
   labs(title = "Scale Degree Reaction Time",
        x = "Scale Degree", 
        y = "Reaction Time in ms") -> sdrt_big_key_note
 
 sdrt_big_key_note
+
+ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
+       plot = sdrt_big_key_note,
+       device = "png")
+
+single_table %>%
+  filter(rt != 9999) %>%
+  filter(rt >= 5000) %>%
+  group_by(scale_degree) %>%
+  mutate(rt_means = mean(rt, na.rm = TRUE), 
+         mean_correct = mean(score, na.rm = TRUE)) %>%
+  filter(scale_degree_f != "NA") %>%
+  ggplot(aes(x = scale_degree_f, y = mean_correct)) +
+  geom_point() + 
+  scale_y_continuous(label = percent) +
+  theme_minimal() +
+  scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
+  labs(title = "Scale Degree Reaction Time",
+       x = "Scale Degree", 
+       y = "Mean Correct") -> sdrt_big_key_note_correct
+
+sdrt_big_key_note_correct
+
+ggsave(filename = "ffh_poster/sdrt_big_key_note_correct.png",
+       plot = sdrt_big_key_note_correct,
+       device = "png")
 
 #--------------------------------------------------
 # Add on The Humdrum Frequency Tables 
@@ -96,7 +192,8 @@ single_table %>%
   filter(rt != 9999) %>%
   group_by(scale_degree) %>%
   mutate(avg_correct = mean(score)) %>%
-  select(scale_degree_f, avg_correct) %>%
+  mutate(avg_rt = mean(rt)) %>%
+  select(scale_degree_f, avg_correct, avg_rt) %>%
   distinct() %>%
   arrange(-avg_correct) -> single_1 
 
@@ -110,20 +207,48 @@ single_corz %>%
   filter(degree != "6-") %>%
   filter(degree != "3-") -> single_corz
 
-cor(single_corz$count, single_corz$avg_correct,use = "pairwise.complete.obs")
+cor(single_corz$count, 
+    single_corz$avg_correct,
+    use = "pairwise.complete.obs", 
+    method = "spearman")
+
+#--------------------------------------------------
+# Fix This one !!! 
+
+# THIS NEEDS ERROR BARS 
+
+single_corz %>%
+  ggplot(aes(x = count, y = avg_rt, color = scale_degree_f, label = scale_degree_f)) + 
+  geom_point() + 
+  geom_text(aes(label=degree), hjust = 1.4, vjust = 1) + 
+  theme_minimal() + 
+  labs(title = "Correct Responses as Predicted by Distribution in MeloSol Corpus",
+       y = "Average Reaction Time in ms",
+       x = "Scale Degree Frequency Count") +
+  theme(legend.position = "none") +
+  scale_x_continuous(label = comma) +
+  scale_y_continuous(label = comma) +
+  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) -> ffh_rt
+
+ggsave(filename = "ffh_poster/ffh_rt.png",plot = ffh_rt,device = "png")
 
 single_corz %>%
   ggplot(aes(x = count, y = avg_correct, color = scale_degree_f, label = scale_degree_f)) + 
   geom_point() + 
   geom_text(aes(label=degree), hjust = 1.4, vjust = 1) + 
   theme_minimal() + 
-  labs(title = "Correct Responses as Predicted by Distribution in MeloSol Corpus",
+  labs(title = "Correct Responses as Predicted by \nDistribution in MeloSol Corpus",
        y = "Average Percent Correct",
        x = "Scale Degree Frequency Count") +
   theme(legend.position = "none") +
   scale_x_continuous(label = comma) +
   scale_y_continuous(label = percent) + 
-  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) 
+  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) -> ffh_correct  
+
+ffh_correct
+
+ggsave(filename = "ffh_poster/ffh_correct.png",plot = ffh_correct,device = "png")
+
 #--------------------------------------------------
 # Same Analysis, but with Grouped
 
@@ -147,19 +272,77 @@ multi_table %>%
   left_join(cogmir_counts) -> SLH_table 
 
 SLH_table %>% 
-  filter(Gram == "Three") %>%
+  filter(Gram == "Nine") %>% 
   group_by(stimulus) %>%
-  mutate(mean_score = mean(score)) %>%
-  ggplot(aes(x = Count, y = mean_score, color = as.factor(quintile))) +
+  mutate(mean_score = mean(score), log_count = log(Count)) %>%
+  ggplot(aes(x = log_count, y = mean_score)) +
+  geom_smooth(method = "lm", se = FALSE) +
   geom_point() +
   theme_minimal() + 
-  labs(title = "Correct Responses as Predicted by Distribution in MeloSol Corpus",
+  labs(title = "Correct Responses as Predicted by \nDistribution in MeloSol Corpus",
        y = "Average Percent Correct",
-       x = "Scale Degree Frequency Count") +
+       x = "Scale Degree Frequency Count (log scale)",
+       subtitle = "9-grams") +
   theme(legend.position = "none") +
   scale_x_continuous(label = comma) +
   scale_y_continuous(label = percent) + 
-  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) 
+  scale_color_viridis(discrete = TRUE, begin = .2, end = .8)
+
+#--------------------------------------------------
+# Average Scores 
+
+SLH_table %>%
+  select(subject, rt, stimulus, score, serial_order) %>%
+  group_by(subject) %>%
+  mutate(mean_score = mean(score)) %>%
+  select(subject, mean_score) %>%
+  distinct() %>%
+  arrange(-mean_score)
+
+SLH_table %>%
+  select(subject, rt, stimulus, score, serial_order, Count) %>%
+  group_by(stimulus) %>%
+  mutate(mean_score = mean(score), n = n ()) %>%
+  select(stimulus, Count, n) %>%
+  arrange(stimulus) %>%
+  distinct()
+
+# plot all the per stimuli, then overlay the IC !!!!
+
+SLH_table %>% 
+  filter(score == 1) %>%
+  filter(stimulus == "^3 ^4 ^5  ^6 v5 v4 v3 v2 v1") %>%
+  group_by(subject) %>%
+  mutate(zRt = scale(rt)) %>%
+  ggplot(aes(x = serial_order, y = zRt, color = as.factor(subject))) + 
+  geom_point() +
+  #geom_line() +
+  geom_smooth(method = "auto", se = FALSE) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(1,9,1)) +
+  scale_fill_viridis(discrete = TRUE) +
+  labs(x = "Serial Order",
+       y = "Reaction time in MS",
+       title = "Single Stim RT",
+       subtitle = "^3 ^4 ^5  ^6 v5 v4 v3 v2 v1")
+
+SLH_table %>% 
+  filter(score == 1) %>%
+  filter(stimulus == "^5 ^6 v5 v4 v3 v2 v1") %>%
+  group_by(subject) %>%
+  mutate(zRt = scale(rt)) %>%
+  ggplot(aes(x = serial_order, y = zRt, color = as.factor(subject))) + 
+  geom_point() +
+  #geom_line() +
+  geom_smooth(method = "auto", se = FALSE) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(1,7,1)) +
+  scale_fill_viridis(discrete = TRUE) +
+  labs(x = "Serial Order",
+       y = "Reaction time in MS",
+       title = "Single Stim RT",
+       subtitle = "^5 ^6 v5 v4 v3 v2 v1")
+
 #======================================================================================================
 # Next Up
 
@@ -181,6 +364,8 @@ fantastic_features$stimulus
 SLH_table %>%
   left_join(fantastic_features) -> modeling_table
 
+#======================================================================================================
+# GARBAGE HERE !
 #--------------------------------------------------
 # Mixed Effects Modeling
 library(lmerTest)
@@ -199,6 +384,17 @@ r.squaredGLMM(toy_model)
 # Make FANTASTIC Plots , Get Peter Stuff 
 library(Hmisc)
 
+for_groups <- as.data.frame(names(modeling_table))
+
+for_groups
+
+write_csv(x = for_groups, path = "imgs/group_plots_output.csv")
+
+for_graph_lables <- read_csv("imgs/group_plots_input.csv",
+                             col_names = c("names","theory"))
+for_graph_lables
+
+
 modeling_table %>%
   # Only Grab Stimuli where Three or More (for Full FANTASTIC)
   filter(Gram == "Three" | Gram == "Five" | Gram == "Seven" | Gram == "Nine") %>%
@@ -216,6 +412,18 @@ wolf$mean_correct
 features <- rownames(wolf)
 feature_plot <- as.data.frame(cbind(wolf$mean_correct, features))
 
+for_graph_lables %>%
+  rename(features = theory) -> for_graph_lables
+
+for_graph_lables %>% print(n = 100)
+
+for_graph_lables %>%
+  left_join(feature_plot)
+
+feature_plot %>%
+  mutate(features = as.character(features)) %>%
+  full_join(for_graph_lables)
+
 feature_plot %>%
   filter(features != "mean_correct") %>%
   mutate(corR = as.numeric(as.character(V1))) %>%
@@ -227,7 +435,14 @@ feature_plot %>%
   labs(title = "Features Correlations with 3,5,7,9 Grams",
        x = "Feature", 
        y = "r") + 
-  theme_minimal()
+  theme_minimal() -> fantastic_plot_1 
+
+fantastic_plot_1
+
+ggsave(filename = "ffh_poster/fantastic_plot_1.png",
+       plot = fantastic_plot_1,
+       device = "png")
+
 
 # Add grouping Variable for ENTROPY, FREQUENCY, IDYOM, SENORY 
 

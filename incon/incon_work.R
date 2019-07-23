@@ -6,5 +6,11 @@ devtools::install_github("pmcharrison/incon")
 #--------------------------------------------------
 # Try his examples
 library(incon)
-chord <- c(60, 64, 67) # major triad, MIDI note numbers
+chord <- c(60,61) # major triad, MIDI note numbers
 incon(chord,model = "all")
+
+# Get List of MIDI notes from Sample
+# Merge on Single Notes 
+# Merge on Sequences 
+
+?incon
