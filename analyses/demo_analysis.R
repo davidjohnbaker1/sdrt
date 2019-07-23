@@ -6,7 +6,7 @@ library(viridis)
 #--------------------------------------------------
 # Import 
 demo_data <- read_csv("data/aggregate_data/current_demo_table.csv")
-
+View(demo_data)
 #--------------------------------------------------
 # Current Demo Table 
 
