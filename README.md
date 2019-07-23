@@ -6,6 +6,7 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 
 * [ ] 3+ Trial answr in multi 
 * [ ] 1 in trial answer in multi 
+* [ ] Clean Directory 
 
 ## Long To Do 
 
