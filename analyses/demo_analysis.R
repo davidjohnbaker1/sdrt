@@ -1,15 +1,17 @@
 #--------------------------------------------------
 # Demographic Analysis Script
 #--------------------------------------------------
+# This script creates Demographic table 
+# as well as the plot used for gender and age 
+#--------------------------------------------------
 library(tidyverse)
 library(viridis)
 library(googledrive)
 #--------------------------------------------------
 # Import 
 demo_data <- read_csv("data/aggregate_data/current_demo_table.csv")
-View(demo_data)
 #--------------------------------------------------
-# Current Demo Table 
+# Create Current Demo Table 
 
 demo_data %>%
   mutate(new_age = str_remove_all(string = age, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
@@ -33,7 +35,8 @@ d_table
 
 number_participants <- nrow(d_table)
 #--------------------------------------------------
-# Demo Chart 
+# Create Demo Chart 
+
 d_table %>%
   summarise(mean_age = mean(age), sd_age = sd(age)) -> age_stats
 
@@ -66,6 +69,5 @@ demo_data %>%
   theme_minimal() -> demo_plot_1
 
 demo_plot_1
-
 
 ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_1, device = "png")

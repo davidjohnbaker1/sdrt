@@ -73,7 +73,10 @@ create_single_data <- function(fns=list.files(pattern=".csv")){
     single_trial %>%
       mutate(stimuli_together = str_remove_all(stimulus, pattern = "stimuli/long/")) %>%
       mutate(drop_mp3 = str_remove_all(stimuli_together, pattern = "\\.mp3")) %>%
-      separate(col = drop_mp3, into = c("key","scale_degree")) -> single_trial
+      separate(col = drop_mp3, into = c("key","scale_degree")) -> single_trial 
+    
+    # Fix Octave Problem (Will remove here for sensory analysis !!)
+    single_trial[single_trial$scale_degree == "do8",]$scale_degree <- "do"
     
     # Recode Button Pressed for scoring 
     single_trial$button_pressed <- recode(single_trial$button_pressed, `0` = "do", `1` = "ra", `2` = "re", `3` = "me", `4` = "mi",
@@ -96,7 +99,12 @@ create_single_data <- function(fns=list.files(pattern=".csv")){
     #--------------------------------------------------
     # This is where you Write this one 
     
-    write.table(single_trial,paste0("single/",substr(fns[i],1,nchar(fns[i])-4),"_single_data.csv"),sep=",",col.names=TRUE,row.names=FALSE)
+    write.table(single_trial,
+                paste0("single/", substr(fns[i],1,nchar(fns[i])-4),
+                                    "_single_data.csv"),
+                sep=",",
+                col.names=TRUE,
+                row.names=FALSE)
     
   
     }

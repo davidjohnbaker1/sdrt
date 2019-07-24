@@ -9,22 +9,18 @@ library(viridis)
 library(scales)
 #--------------------------------------------------
 # Item Plot to Poster 
-# Need to fix scoring of do8 
 # Need to Implement Miller Model and others! 
 # Then run fixed effects 
 # Cum IC of all the Models 
-# Check did not loose stimuli along the way 
 #--------------------------------------------------
 # Import Data 
-
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
 single_table <- read_csv("data/aggregate_data/current_single_table.csv")
 multi_table <- read_csv("data/aggregate_data/current_multi_table.csv")
-
 #--------------------------------------------------
 # Krumhansl 1982 ratings
-krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88,6.35)
-scale_degree <- c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti","do8")
+krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88)
+scale_degree <- c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti")
 krummy <- data.frame(krumhansl,scale_degree)
 
 #--------------------------------------------------
@@ -76,6 +72,7 @@ single_table %>%
   ggplot(aes(x = scale_degree_f, y = rt, color = as.factor(key), shape = as.factor(score))) +
   geom_point() + 
   theme_minimal() +
+  # coord_flip() +
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
   labs(title = "Scale Degree Reaction Time",
        x = "Scale Degree", 
@@ -160,6 +157,31 @@ ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
        plot = sdrt_big_key_note,
        device = "png")
 
+#--------------------------------------------------
+# Invert Plot 
+single_table %>%
+  filter(rt != 9999) %>%
+  filter(rt >= 5000) %>%
+  group_by(scale_degree) %>%
+  mutate(rt_means = mean(rt, na.rm = TRUE), 
+         mean_correct = mean(score, na.rm = TRUE)) %>%
+  filter(scale_degree_f != "NA") %>%
+  mutate(rt_means_invert = 1/rt_means) %>%
+  ggplot(aes(x = scale_degree_f, y = rt_means_invert)) +
+  geom_point() + 
+  theme_minimal() +
+  scale_y_continuous(labels = comma) +
+  scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
+  labs(title = "Scale Degree Reaction Time (Inverted)",
+       x = "Scale Degree", 
+       y = "INVERSION") -> sdrt_big_key_note_invert
+
+sdrt_big_key_note_invert
+
+ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
+       plot = sdrt_big_key_note,
+       device = "png")
+
 single_table %>%
   filter(rt != 9999) %>%
   filter(rt >= 5000) %>%
@@ -172,7 +194,7 @@ single_table %>%
   scale_y_continuous(label = percent) +
   theme_minimal() +
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
-  labs(title = "Scale Degree Reaction Time",
+  labs(title = "Scale Degree Average Correct",
        x = "Scale Degree", 
        y = "Mean Correct") -> sdrt_big_key_note_correct
 
@@ -200,10 +222,22 @@ krummy %>%
        y = "Mean Rating") -> krumhansl_1982
 
 krumhansl_1982
-  
+
 ggsave(filename = "ffh_poster/krumhansl_1982.png",
        plot = krumhansl_1982,
        device = "png")
+
+
+# MULTI PLOT 
+cowplot::plot_grid(krumhansl_1982,
+                   sdrt_big_key_note, 
+                   sdrt_big_key_note_correct,
+                   sdrt_big_key_note_invert) -> krum_mutli_plot
+  
+ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
+       plot = krum_mutli_plot,
+       device = "png")
+
 
 
 #----------------------------------  
@@ -639,5 +673,4 @@ multi_table %>%
 # RT Modeling 
 # Cor IC with RT 
 # Make Sampling Distribution Plot for Talk to show how sampled 
-# CLEAN UP YO GOD DAMN CODE 
 #======================================================================================================
