@@ -9,6 +9,7 @@ library(viridis)
 library(scales)
 #--------------------------------------------------
 # Item Plot to Poster 
+# Check why 1 2 is perfect score and others are missing 
 # Need to Implement Miller Model and others! 
 # Then run fixed effects 
 # Cum IC of all the Models 
@@ -349,7 +350,7 @@ ggsave(filename = "ffh_poster/ffh_correct_lm.png",plot = ffh_correct_lm,device =
 #--------------------------------------------------
 # Same Analysis, but with Grouped
 
-cogmir_counts <- read_csv("stimuli_lists/cogmir_stimuli.csv")
+cogmir_counts <- read_csv("experiment_materials/stimuli_lists/cogmir_stimuli.csv")
 
 #View(cogmir_counts)
 
@@ -444,7 +445,7 @@ SLH_table %>%
 # Next Up
 
 
-fantastic_features <- read_csv("new_stimuli/MelodyFeatures.csv")
+fantastic_features <- read_csv("experiment_materials/new_stimuli/MelodyFeatures.csv")
 
 # Need to get rest of FANASTIC Materials 
 
@@ -539,6 +540,27 @@ fantastic_plot_1
 ggsave(filename = "ffh_poster/fantastic_plot_1.png",
        plot = fantastic_plot_1,
        device = "png")
+
+modeling_table %>%
+  group_by(stimulus) %>%
+  mutate(mean_score = mean(score)) %>%
+  select(stimulus, mean_score,Gram, quintile) %>%
+  distinct() %>%
+  arrange(-mean_score) %>%
+  ggplot(aes(x = reorder(stimulus, -mean_score), y = mean_score, fill = as.factor(quintile))) +
+  geom_bar(stat = 'identity') +
+  coord_flip() +
+  theme_minimal() +
+  scale_fill_viridis(discrete = TRUE) + 
+  labs(title = "Difficulty of Stimuli by Quintle",
+       fill = "Quintile",
+       x = "Stimuli",
+       y = "Mean Score") -> item_difficulty_map
+
+item_difficulty_map
+
+ggsave(filename = "ffh_poster/item_difficulty.png",plot = item_difficulty_map,device = "png")
+
 
 
 # Add grouping Variable for ENTROPY, FREQUENCY, IDYOM, SENORY 
