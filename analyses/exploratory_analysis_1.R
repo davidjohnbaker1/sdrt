@@ -7,21 +7,26 @@
 library(tidyverse)
 library(viridis)
 library(scales)
-
-
+#--------------------------------------------------
 # Item Plot to Poster 
 # Need to fix scoring of do8 
 # Need to Implement Miller Model and others! 
 # Then run fixed effects 
 # Cum IC of all the Models 
 # Check did not loose stimuli along the way 
-
 #--------------------------------------------------
 # Import Data 
 
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
 single_table <- read_csv("data/aggregate_data/current_single_table.csv")
 multi_table <- read_csv("data/aggregate_data/current_multi_table.csv")
+
+#--------------------------------------------------
+# Krumhansl 1982 ratings
+krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88,6.35)
+scale_degree <- c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti","do8")
+krummy <- data.frame(krumhansl,scale_degree)
+
 #--------------------------------------------------
 
 # Single Analyses 
@@ -58,9 +63,6 @@ single_table %>%
 sdrt_big
 
 ggsave(filename = "ffh_poster/sdrt_big.png",plot = sdrt_big,device = "png")
-
-#--------------------------------------------------
-# 88533
 
 #--------------------------------------------------
 # Particpant Main Effects 
@@ -179,6 +181,32 @@ sdrt_big_key_note_correct
 ggsave(filename = "ffh_poster/sdrt_big_key_note_correct.png",
        plot = sdrt_big_key_note_correct,
        device = "png")
+#--------------------------------------------------
+# Make Krumhansl Plot 
+
+# Set Factor For Graphing 
+krummy$scale_degree_f <- factor(krummy$scale_degree, 
+                                      levels = c("do","ra", "re", "me", "mi",
+                                                 "fa", "fi","sol","le", "la", 
+                                                 "te", "ti", "do8"))
+
+krummy %>%
+  ggplot(aes( x = scale_degree_f, y = krumhansl)) +
+  geom_point() + 
+  theme_minimal() +
+  scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
+  labs(title = "Krumhansl Ratings (1982)",
+       x = "Scale Degree", 
+       y = "Mean Rating") -> krumhansl_1982
+
+krumhansl_1982
+  
+ggsave(filename = "ffh_poster/krumhansl_1982.png",
+       plot = krumhansl_1982,
+       device = "png")
+
+
+#----------------------------------  
 
 #--------------------------------------------------
 # Add on The Humdrum Frequency Tables 
@@ -206,6 +234,23 @@ single_corz %>%
   filter(degree != "3+") %>%
   filter(degree != "6-") %>%
   filter(degree != "3-") -> single_corz
+
+
+#--------------------------------------------------
+# Get LE 
+
+single_corz %>%
+  left_join(krummy) -> single_corz
+
+cor(single_corz$krumhansl, 
+    single_corz$avg_correct,
+    use = "pairwise.complete.obs", 
+    method = "spearman")
+
+cor(single_corz$krumhansl, 
+    single_corz$avg_rt,
+    use = "pairwise.complete.obs", 
+    method = "spearman")
 
 cor(single_corz$count, 
     single_corz$avg_correct,
@@ -243,11 +288,29 @@ single_corz %>%
   theme(legend.position = "none") +
   scale_x_continuous(label = comma) +
   scale_y_continuous(label = percent) + 
-  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) -> ffh_correct  
+  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) -> ffh_correct 
+
+
+single_corz %>%
+  ggplot(aes(x = count, y = avg_correct, label = scale_degree_f)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text(aes(label=degree), hjust = 1.4, vjust = 1) + 
+  theme_minimal() + 
+  labs(title = "Correct Responses as Predicted by \nDistribution in MeloSol Corpus",
+       y = "Average Percent Correct",
+       x = "Scale Degree Frequency Count") +
+  theme(legend.position = "none") +
+  scale_x_continuous(label = comma) +
+  scale_y_continuous(label = percent) + 
+  scale_color_viridis(discrete = TRUE, begin = .2, end = .8) -> ffh_correct_lm
+
+ffh_correct_lm
 
 ffh_correct
 
 ggsave(filename = "ffh_poster/ffh_correct.png",plot = ffh_correct,device = "png")
+ggsave(filename = "ffh_poster/ffh_correct_lm.png",plot = ffh_correct_lm,device = "png")
 
 #--------------------------------------------------
 # Same Analysis, but with Grouped

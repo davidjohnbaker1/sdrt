@@ -6,16 +6,17 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 
 * [ ] 3+ Trial answr in multi 
 * [ ] 1 in trial answer in multi 
-* [ ] Clean Directory 
 
 ## Long To Do 
 
-* [ ] Start Talk and Make it about Conclusions 
 * [ ] Start Mixed Effects Modeling List 
 * [ ] Fill in Rest of Fantastic Features
 * [ ] incon features for stimuli
 * [ ] IDyOM Features for Stimuli 
 * [ ] Group Analyses for Talk 
+
+* [X] Clean Directory 
+* [X] Start Talk and Make it about Conclusions 
 * [X] Create Number of Note limit Plot 
 * [X] Create Giant cor bar plot 
 * [X] Host Server 

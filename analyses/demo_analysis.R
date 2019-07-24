@@ -3,6 +3,7 @@
 #--------------------------------------------------
 library(tidyverse)
 library(viridis)
+library(googledrive)
 #--------------------------------------------------
 # Import 
 demo_data <- read_csv("data/aggregate_data/current_demo_table.csv")
@@ -33,6 +34,11 @@ d_table
 number_participants <- nrow(d_table)
 #--------------------------------------------------
 # Demo Chart 
+d_table %>%
+  summarise(mean_age = mean(age), sd_age = sd(age)) -> age_stats
+
+mean_age <- round(age_stats[1],2)
+sd_age <- round(age_stats[2],2)
 
 demo_data %>%
   mutate(new_age = str_remove_all(string = age, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
@@ -56,9 +62,10 @@ demo_data %>%
   scale_fill_viridis(discrete = TRUE) +
   labs(title = "Age and Gender Distribution in Sample",
        x = "Age",
-       y =  "Density", fill = "Gender", subtitle = paste("N =",number_participants)) +
+       y =  "Density", fill = "Gender", subtitle = paste("N =",number_participants,"Mean =", mean_age, "SD = ", sd_age)) +
   theme_minimal() -> demo_plot_1
 
 demo_plot_1
+
 
 ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_1, device = "png")
