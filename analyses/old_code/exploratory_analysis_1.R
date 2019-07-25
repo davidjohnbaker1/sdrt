@@ -1,9 +1,12 @@
 #======================================================================================================
 # Exploratory Analysis for CogMir 
 #--------------------------------------------------
+# OLD SCRIPT 
+# NOW SPLIT INTO MULTI 
+#--------------------------------------------------
 # Correlation between frequency and accuracy
 #--------------------------------------------------
-# Library 
+# Library ####
 library(tidyverse)
 library(viridis)
 library(scales)
@@ -14,7 +17,7 @@ library(scales)
 # Then run fixed effects 
 # Cum IC of all the Models 
 #--------------------------------------------------
-# Import Data 
+# Import Data ####
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
 single_table <- read_csv("data/aggregate_data/current_single_table.csv")
 multi_table <- read_csv("data/aggregate_data/current_multi_table.csv")
@@ -24,11 +27,9 @@ krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88)
 scale_degree <- c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti")
 krummy <- data.frame(krumhansl,scale_degree)
 
+#======================================================================================================
 #--------------------------------------------------
-
-# Single Analyses 
-names(single_table)
-unique(single_table$scale_degree)
+# Single Note Analyses ####
 
 # Set Factor For Graphing 
 single_table$scale_degree_f <- factor(single_table$scale_degree, 
@@ -36,8 +37,10 @@ single_table$scale_degree_f <- factor(single_table$scale_degree,
                                                  "fa", "fi","sol","le", "la", 
                                                   "te", "ti", "do8"))
 
+
+
 #--------------------------------------------------
-# Data 
+# Visualize Single Data #### 
 #--------------------------------------------------
 # All Data 
 single_table %>%
@@ -59,7 +62,8 @@ single_table %>%
 
 sdrt_big
 
-ggsave(filename = "ffh_poster/sdrt_big.png",plot = sdrt_big,device = "png")
+#--------------------------------------------------
+# ggsave(filename = "ffh_poster/sdrt_big.png",plot = sdrt_big,device = "png")
 
 #--------------------------------------------------
 # Particpant Main Effects 
@@ -84,9 +88,9 @@ single_table %>%
 
 sdrt_big_indv
 
-ggsave(filename = "ffh_poster/sdrt_big_indv.png",
-       plot = sdrt_big_indv,
-       device = "png")
+#ggsave(filename = "ffh_poster/sdrt_big_indv.png",
+#       plot = sdrt_big_indv,
+#       device = "png")
 
 #--------------------------------------------------
 # Average Over SD and Key 
@@ -109,7 +113,7 @@ single_table %>%
 
 sdrt_big_key
 
-ggsave(filename = "ffh_poster/sdrt_big_key.png",plot = sdrt_big_key,device = "png")
+#ggsave(filename = "ffh_poster/sdrt_big_key.png",plot = sdrt_big_key,device = "png")
 
 
 single_table %>%
@@ -129,9 +133,9 @@ single_table %>%
 
 sdrt_big_key_correct
 
-ggsave(filename = "ffh_poster/sdrt_big_key_correct.png",
-       plot = sdrt_big_key_correct,
-       device = "png")
+#ggsave(filename = "ffh_poster/sdrt_big_key_correct.png",
+#       plot = sdrt_big_key_correct,
+#       device = "png")
 
 #--------------------------------------------------
 # Average Over Keys 
@@ -154,9 +158,9 @@ single_table %>%
 
 sdrt_big_key_note
 
-ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
-       plot = sdrt_big_key_note,
-       device = "png")
+#ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
+#       plot = sdrt_big_key_note,
+#       device = "png")
 
 #--------------------------------------------------
 # Invert Plot 
@@ -179,9 +183,9 @@ single_table %>%
 
 sdrt_big_key_note_invert
 
-ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
-       plot = sdrt_big_key_note,
-       device = "png")
+#ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
+#       plot = sdrt_big_key_note,
+#       device = "png")
 
 single_table %>%
   filter(rt != 9999) %>%
@@ -201,9 +205,9 @@ single_table %>%
 
 sdrt_big_key_note_correct
 
-ggsave(filename = "ffh_poster/sdrt_big_key_note_correct.png",
-       plot = sdrt_big_key_note_correct,
-       device = "png")
+#ggsave(filename = "ffh_poster/sdrt_big_key_note_correct.png",
+#       plot = sdrt_big_key_note_correct,
+#       device = "png")
 #--------------------------------------------------
 # Make Krumhansl Plot 
 
@@ -224,9 +228,9 @@ krummy %>%
 
 krumhansl_1982
 
-ggsave(filename = "ffh_poster/krumhansl_1982.png",
-       plot = krumhansl_1982,
-       device = "png")
+#ggsave(filename = "ffh_poster/krumhansl_1982.png",
+#       plot = krumhansl_1982,
+#       device = "png")
 
 
 # MULTI PLOT 
@@ -238,9 +242,9 @@ cowplot::plot_grid(krumhansl_1982,
 
 krum_mutli_plot
   
-ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
-       plot = krum_mutli_plot,
-       device = "png")
+#ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
+#       plot = krum_mutli_plot,
+#       device = "png")
 
 
 
@@ -250,7 +254,7 @@ ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
 # Add on The Humdrum Frequency Tables 
 #--------------------------------------------------
 
-n_gram_counts <- read_csv("stimuli_lists/cogmir_stimuli.csv")
+n_gram_counts <- read_csv("experiment_materials/stimuli_lists/cogmir_stimuli.csv")
 single_n_counts <- read_tsv("corpus/single_data.tsv", col_names = c("count","degree","gram","scale_degree"))
 
 single_table %>%
@@ -313,7 +317,7 @@ single_corz %>%
   scale_y_continuous(label = comma) +
   scale_color_viridis(discrete = TRUE, begin = .2, end = .8) -> ffh_rt
 
-ggsave(filename = "ffh_poster/ffh_rt.png",plot = ffh_rt,device = "png")
+#ggsave(filename = "ffh_poster/ffh_rt.png",plot = ffh_rt,device = "png")
 
 single_corz %>%
   ggplot(aes(x = count, y = avg_correct, color = scale_degree_f, label = scale_degree_f)) + 
@@ -347,8 +351,8 @@ ffh_correct_lm
 
 ffh_correct
 
-ggsave(filename = "ffh_poster/ffh_correct.png",plot = ffh_correct,device = "png")
-ggsave(filename = "ffh_poster/ffh_correct_lm.png",plot = ffh_correct_lm,device = "png")
+#ggsave(filename = "ffh_poster/ffh_correct.png",plot = ffh_correct,device = "png")
+#ggsave(filename = "ffh_poster/ffh_correct_lm.png",plot = ffh_correct_lm,device = "png")
 
 #--------------------------------------------------
 # Same Analysis, but with Grouped
@@ -540,9 +544,9 @@ feature_plot %>%
 
 fantastic_plot_1
 
-ggsave(filename = "ffh_poster/fantastic_plot_1.png",
-       plot = fantastic_plot_1,
-       device = "png")
+#ggsave(filename = "ffh_poster/fantastic_plot_1.png",
+#       plot = fantastic_plot_1,
+#       device = "png")
 
 modeling_table %>%
   group_by(stimulus) %>%
@@ -562,7 +566,8 @@ modeling_table %>%
 
 item_difficulty_map
 
-ggsave(filename = "ffh_poster/item_difficulty.png",plot = item_difficulty_map,device = "png")
+#--------------------------------------------------
+# ggsave(filename = "ffh_poster/item_difficulty.png",plot = item_difficulty_map,device = "png")
 
 
 

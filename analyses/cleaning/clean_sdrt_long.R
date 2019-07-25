@@ -159,6 +159,12 @@ create_multi_data <- function(fns=list.files(pattern=".csv")){
     mutate(file_name_group = str_remove_all(file_name_group, "melody_")) %>%
     mutate(file_name_group = str_remove_all(file_name_group, "_$")) %>%
     mutate(file_name_group = str_remove_all(file_name_group, "_buffer")) %>%
+    mutate(file_name_group = str_replace_all(string = file_name_group,  # NEW LINE 
+                                             pattern = "\\ ",           # Remove if wrong 
+                                             replacement = "")) %>%     # Thru here   
+    mutate(file_name_group = str_replace_all(string = file_name_group,   # Add in that v 
+                                             pattern = "v1_v7-_7-", 
+                                             replacement = "v1_v7-_v7-")) %>%
     filter(trial_type == "audio-keyboard-response") %>%
     mutate(trial_response = strsplit(file_name_group,"_")) %>% # MONEY!!!!
     unnest(trial_response) %>%

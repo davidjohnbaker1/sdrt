@@ -5,7 +5,7 @@ library(tidyverse)
 options(readr.num_columns = 0)
 #--------------------------------------------------
 setwd("data/")
-source("../analyses/clean_sdrt_long.R")
+source("../analyses/cleaning/clean_sdrt_long.R")
 create_demo_table()
 create_single_data()
 create_multi_data()

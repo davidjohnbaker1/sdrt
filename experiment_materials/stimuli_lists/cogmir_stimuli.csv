@@ -35,7 +35,7 @@ Count,Pattern,Gram,quintile
 5,2 v1+ ,Two,3
 5,v2 ^6- ,Two,3
 4,1 v1+ ^2 ,Three,2
-4,1 v7- 7- ,Three,2
+4,v1 v7- v7- ,Three,2
 4,v2 v5 ^3 ,Three,2
 4,^1 v3 ^6 ,Three,2
 4,^5 v4+ v3 ,Three,2
