@@ -15,6 +15,7 @@ library(scales)
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
 single_table <- read_csv("data/aggregate_data/current_single_table.csv")
 multi_table <- read_csv("data/aggregate_data/current_multi_table.csv")
+idyom_computations <- read_csv("data/aggregate_data/idyom_computation.csv")
 #--------------------------------------------------
 # Krumhansl 1982 ratings
 krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88)
@@ -42,7 +43,57 @@ cogmir_counts %>%
   rename(stimulus = Pattern) -> cogmir_counts
 
 multi_table %>%
-  left_join(cogmir_counts) -> SLH_table 
+  left_join(cogmir_counts) -> SLH_table
+
+idyom_computations$stimulus <- gsub(pattern = "_", replacement = " ",x = idyom_computations$stimulus)
+
+SLH_table %>%
+  left_join(idyom_computations) -> idyom_analysis_table 
+
+
+# Set Factor For Graphing 
+idyom_analysis_table$Gram <- factor(idyom_analysis_table$Gram, 
+                                      levels = c("Two","Three","Five","Seven","Nine"))
+
+
+idyom_analysis_table %>%
+  select(average_ic, score)
+
+cor(idyom_analysis_table$score, idyom_analysis_table$average_ic, use = "complete.obs")
+
+idyom_analysis_table %>%
+  group_by(stimulus) %>%
+  mutate(avg_score = mean(score)) %>%
+  select(stimulus, Count, Gram, quintile, average_ic, avg_score) %>%
+  distinct() -> id_regression_table 
+
+id_regression_table %>%
+  filter(average_ic != 0) -> id_regression_table
+
+cor(id_regression_table$avg_score, id_regression_table$average_ic, use = "complete.obs")
+
+id_regression_table %>%
+  ggplot(aes(x = average_ic, y = avg_score, color = Gram)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  scale_color_viridis(discrete = TRUE) +
+  labs(title = "IDyOM Predicts Average Score via Information Content",
+       x = "Average IC of n-gram in MeloSol Corpus",
+       y = "Average Score of Sample") -> grouped_idyom_regression_plot
+
+ggsave(filename = "ffh_poster/grouped_idyom_regression.png",plot = grouped_idyom_regression_plot,device = "png")
+
+
+model_idyom <- lm(avg_score ~ average_ic, data = id_regression_table)
+summary(model_idyom)
+plot(model_idyom)
+
+model_number_of_notes <- lm(avg_score ~ Gram, id_regression_table)
+summary(model_number_of_notes)
+plot(model_number_of_notes)
+
+#--------------------------------------------------
 
 SLH_table %>% 
   filter(Gram == "Nine") %>% 

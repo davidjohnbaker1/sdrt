@@ -178,6 +178,7 @@ create_multi_data <- function(fns=list.files(pattern=".csv")){
                                  "2+" ="me", # ENHARMONIC ENCODING 
                                  "3-" = "me", 
                                  "3" = "mi",
+                                 "3+" = "mi",
                                  "4"="fa", 
                                  "4+" = "fi",
                                  "5-" ="fi", # Enharmonic Encoding 

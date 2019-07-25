@@ -4,18 +4,25 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 
 ## Bugs
 
-* [ ] 3+ Trial answr in multi 
-* [ ] 1 in trial answer in multi 
+* [ ] Missing Three IDYOM Computations 
+
+## FFH Poster Checklist 
+
+* [ ] Frequency Distribution predicts load on memory 
+* [ ] Mixed Effects (eventually) 
 
 ## Long To Do 
 
 * [ ] Start Mixed Effects Modeling List 
 * [ ] Fill in Rest of Fantastic Features
 * [ ] incon features for stimuli
-* [ ] IDyOM Features for Stimuli 
 * [ ] Group Analyses for Talk 
 
+* [X] Model with IDyOM 
+* [X] IDyOM Features for Stimuli 
 * [X] Clean Directory 
+* [X] 1 in trial answer in multi 
+* [X] 3+ Trial answr in multi 
 * [X] Start Talk and Make it about Conclusions 
 * [X] Create Number of Note limit Plot 
 * [X] Create Giant cor bar plot 
