@@ -234,6 +234,9 @@ cowplot::plot_grid(krumhansl_1982,
                    sdrt_big_key_note, 
                    sdrt_big_key_note_correct,
                    sdrt_big_key_note_invert) -> krum_mutli_plot
+
+
+krum_mutli_plot
   
 ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
        plot = krum_mutli_plot,
