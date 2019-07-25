@@ -82,7 +82,10 @@ id_regression_table %>%
        x = "Average IC of n-gram in MeloSol Corpus",
        y = "Average Score of Sample") -> grouped_idyom_regression_plot
 
-ggsave(filename = "ffh_poster/grouped_idyom_regression.png",plot = grouped_idyom_regression_plot,device = "png")
+
+grouped_idyom_regression_plot
+
+# ggsave(filename = "ffh_poster/grouped_idyom_regression.png",plot = grouped_idyom_regression_plot,device = "png")
 
 
 model_idyom <- lm(avg_score ~ average_ic, data = id_regression_table)
@@ -93,6 +96,45 @@ model_number_of_notes <- lm(avg_score ~ Gram, id_regression_table)
 summary(model_number_of_notes)
 plot(model_number_of_notes)
 
+id_regression_table
+
+
+#======================================================================================================
+# Next Up
+
+
+fantastic_features <- read_csv("experiment_materials/new_stimuli/MelodyFeatures.csv")
+
+# Need to get rest of FANASTIC Materials 
+
+fantastic_features %>%
+  rename(stimulus = file.id) -> fantastic_features
+
+fantastic_features$stimulus <- gsub(pattern = "m",replacement = "", fantastic_features$stimulus)
+fantastic_features$stimulus <- gsub(pattern = "ono",replacement = "", fantastic_features$stimulus)
+fantastic_features$stimulus <- gsub(pattern = "_",replacement = " ", fantastic_features$stimulus)
+fantastic_features$stimulus <- str_trim(fantastic_features$stimulus, side = "right")
+
+fantastic_features$stimulus
+
+id_regression_table %>%
+  left_join(fantastic_features) -> modeling_table
+
+#======================================================================================================
+# Drop 2 grams 
+
+modeling_table %>%
+  filter(Gram != "Two") -> modeling_table
+
+modeling_table
+
+#--------------------------------------------------
+# More regression 
+
+
+
+#======================================================================================================
+# Old Plots 
 #--------------------------------------------------
 
 SLH_table %>% 
@@ -166,26 +208,3 @@ SLH_table %>%
        y = "Reaction time in MS",
        title = "Single Stim RT",
        subtitle = "^5 ^6 v5 v4 v3 v2 v1")
-
-#======================================================================================================
-# Next Up
-
-
-fantastic_features <- read_csv("experiment_materials/new_stimuli/MelodyFeatures.csv")
-
-# Need to get rest of FANASTIC Materials 
-
-fantastic_features %>%
-  rename(stimulus = file.id) -> fantastic_features
-
-fantastic_features$stimulus <- gsub(pattern = "m",replacement = "", fantastic_features$stimulus)
-fantastic_features$stimulus <- gsub(pattern = "ono",replacement = "", fantastic_features$stimulus)
-fantastic_features$stimulus <- gsub(pattern = "_",replacement = " ", fantastic_features$stimulus)
-fantastic_features$stimulus <- str_trim(fantastic_features$stimulus, side = "right")
-
-fantastic_features$stimulus
-
-SLH_table %>%
-  left_join(fantastic_features) -> modeling_table
-
-
