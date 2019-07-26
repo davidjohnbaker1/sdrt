@@ -230,7 +230,7 @@ cowplot::plot_grid(krumhansl_1982,
 
 krum_mutli_plot
 
-#ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
-#       plot = krum_mutli_plot,
-#       device = "png")
+ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
+       plot = krum_mutli_plot,
+       device = "png")
 

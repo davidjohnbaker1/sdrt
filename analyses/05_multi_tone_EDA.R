@@ -75,6 +75,7 @@ cor(id_regression_table$avg_score, id_regression_table$average_ic, use = "comple
 id_regression_table %>%
   ggplot(aes(x = average_ic, y = avg_score, color = Gram)) +
   geom_point() +
+  scale_y_continuous(labels = percent) + 
   geom_smooth(method = "lm", se = FALSE) +
   theme_minimal() +
   scale_color_viridis(discrete = TRUE) +
@@ -85,7 +86,26 @@ id_regression_table %>%
 
 grouped_idyom_regression_plot
 
+id_regression_table %>%
+  ggplot(aes(x = average_ic, y = avg_score)) +
+  geom_point() +
+  scale_y_continuous(labels = percent) + 
+  geom_smooth(method = "lm", se = TRUE) +
+  theme_minimal() +
+  scale_color_viridis(discrete = TRUE) +
+  labs(title = "IDyOM Predicts Average Score via Information Content",
+       x = "Average IC of n-gram in MeloSol Corpus",
+       y = "Average Score of Sample") -> idyom_regression_plot
+
+idyom_regression_plot
+
+
 # ggsave(filename = "ffh_poster/grouped_idyom_regression.png",plot = grouped_idyom_regression_plot,device = "png")
+id_regression_table %>%
+  filter(average_ic  < 20) -> without_longer
+
+wolonger_model <- lm(avg_score ~ average_ic, data = without_longer)
+summary(wolonger_model)
 
 
 model_idyom <- lm(avg_score ~ average_ic, data = id_regression_table)
@@ -129,8 +149,14 @@ modeling_table %>%
 modeling_table
 
 #--------------------------------------------------
-# More regression 
+# More regression
 
+# Krum plots could be next to each other
+# Could also show data for each point... so show dispersion bc sd interesting
+
+# Item Difficulty plot 
+# Group That 
+# Mixed Effects 
 
 
 #======================================================================================================

@@ -57,6 +57,7 @@ demo_data %>%
   mutate(years_teaching = str_remove_all(string = years_teaching, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
   mutate(years_teaching = str_remove_all(string = years_teaching, pattern = "\\\\\\}")) %>%
   mutate(gender = str_to_upper(gender)) %>%
+  mutate(gender = str_remove_all(string = gender, pattern = "CIS\ ")) %>% # Degranulate data 
   mutate(gender = str_replace_all(string = gender, pattern = "\\F$", replacement = "FEMALE")) %>%
   select(age, education, gender, AP, weeks_taking, years_teaching) %>%
   ggplot(aes(x = age, fill = gender)) +
