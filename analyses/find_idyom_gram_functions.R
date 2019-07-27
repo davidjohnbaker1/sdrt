@@ -3,6 +3,9 @@
 #--------------------------------------------------
 # Hard Code Example 
 
+std_e_m <- function(x) sd(x)/sqrt(length(x))
+
+
 get_string_idyom_ic <- function(chopdown){
   chopdown %>%
     select(melody.name, note.id, scale_degree, information.content, new) %>%

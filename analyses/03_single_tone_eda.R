@@ -126,21 +126,26 @@ sdrt_big_key_correct
 #       device = "png")
 
 #--------------------------------------------------
-# Average Over Keys 
+# Average Over Keys
+
+std_e_m <- function(x) sd(x)/sqrt(length(x))
 
 single_table %>%
   filter(rt != 9999) %>%
   filter(rt >= 5000) %>%
   group_by(scale_degree) %>%
-  mutate(rt_means = mean(rt, na.rm = TRUE), 
+  mutate(rt_means = mean(rt, na.rm = TRUE),
+         rt_sd = std_e_m(rt),
          mean_correct = mean(score, na.rm = TRUE)) %>%
   filter(scale_degree_f != "NA") %>%
   ggplot(aes(x = scale_degree_f, y = rt_means)) +
+  geom_errorbar(aes(ymin=rt_means-rt_sd, ymax=rt_means+rt_sd), width=.2,
+                position=position_dodge(.9)) +
   geom_point() + 
   theme_minimal() +
   scale_y_continuous(labels = comma) +
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
-  labs(title = "Scale Degree Reaction Time",
+  labs(title = "Scale Degree Reaction Time", 
        x = "Scale Degree", 
        y = "Reaction Time in ms") -> sdrt_big_key_note
 
@@ -164,8 +169,9 @@ single_table %>%
   geom_point() + 
   theme_minimal() +
   scale_y_continuous(labels = comma) +
+  # theme(axis.title.y = element_blank(), axis.text.y = element_blank()) +
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
-  labs(title = "Scale Degree Reaction Time (Inverted)",
+  labs(title = "Inverted Scale Degree Reaction Time",
        x = "Scale Degree", 
        y = "INVERSION") -> sdrt_big_key_note_invert
 
@@ -180,9 +186,12 @@ single_table %>%
   filter(rt >= 5000) %>%
   group_by(scale_degree) %>%
   mutate(rt_means = mean(rt, na.rm = TRUE), 
-         mean_correct = mean(score, na.rm = TRUE)) %>%
+         mean_correct = mean(score, na.rm = TRUE),
+         correct_sem = std_e_m(score)) %>%
   filter(scale_degree_f != "NA") %>%
   ggplot(aes(x = scale_degree_f, y = mean_correct)) +
+  geom_errorbar(aes(ymin=mean_correct-correct_sem, ymax=mean_correct+correct_sem), width=.2,
+                position=position_dodge(.9)) +
   geom_point() + 
   scale_y_continuous(label = percent) +
   theme_minimal() +
@@ -222,10 +231,35 @@ krumhansl_1982
 
 
 # MULTI PLOT 
-cowplot::plot_grid(krumhansl_1982,
-                   sdrt_big_key_note, 
+corpus_counts <- read_csv("data/for_krum_multi_plot.csv")
+
+# Set Factor For Graphing 
+corpus_counts$scale_degree_f <- factor(corpus_counts$scale_degree, 
+                                      levels = c("do","ra", "re", "me", "mi",
+                                                 "fa", "fi","sol","le", "la", 
+                                                 "te", "ti"))
+
+corpus_counts %>%
+  filter(degree != "1-") %>% # Enharmonic 
+  filter(degree != "6-") %>% # Remove Minor Notes (Since Major Experiment Prime)
+  filter(degree != "6+") %>% # Remove Minor Notes (Since Major Experiment Prime)
+  filter(degree != "7+") %>% 
+  filter(degree != "5-") %>% 
+  filter(degree != "3+") -> corpus_counts
+
+corpus_counts %>%
+  ggplot(aes(x = scale_degree_f, y = count)) + 
+  geom_point() + 
+  scale_y_continuous(label = comma) +
+  theme_minimal() +
+  labs(title = "Frequency Count in MeloSol",
+       x = "Scale Degree", 
+       y = "Frequency") -> melo_sol_counts
+
+cowplot::plot_grid(sdrt_big_key_note, 
+                   sdrt_big_key_note_invert,
                    sdrt_big_key_note_correct,
-                   sdrt_big_key_note_invert) -> krum_mutli_plot
+                   melo_sol_counts,krumhansl_1982, ncol = 1, nrow = 5) -> krum_mutli_plot
 
 
 krum_mutli_plot
@@ -234,3 +268,37 @@ ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
        plot = krum_mutli_plot,
        device = "png")
 
+library(ggcorrplot)
+
+
+corpus_counts %>%
+  left_join(krummy) %>%
+  select(avg_correct, avg_rt, count, krumhansl) %>%
+  round(2) %>%
+  rename(`Average Correct` = avg_correct,
+         `Average Reaction Time` = avg_rt,
+         `Frequency in MeloSol` = count,
+         `Krumhansl 1982` = krumhansl) %>%
+  cor(method = "spearman") %>%
+  xtable::xtable()
+
+corpus_counts %>%
+  left_join(krummy) %>%
+  select(avg_correct, avg_rt, count, krumhansl) %>%
+  round(2) %>%
+  rename(`Average Correct` = avg_correct,
+         `Average Reaction Time` = avg_rt,
+         `Frequency in MeloSol` = count,
+         `Krumhansl 1982` = krumhansl) %>%
+  cor(method = "spearman") %>%
+  ggcorrplot(hc.order = TRUE, type = "lower",
+             lab = TRUE,colors = c("#3b1c8c","#21908d","#5ac865"),
+             tl.cex = 20,
+             pch.cex = 20,
+             digits = 3) -> cor_heat_map
+
+cor_heat_map
+  
+ggsave(filename = "ffh_poster/cor_heat_map.png",
+       plot = cor_heat_map,
+       device = "png")

@@ -4,11 +4,13 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 
 ## Bugs
 
-* [ ] Missing Three IDYOM Computations 
+* [ ] Missing Three IDYOM Computations !!!!
 
 ## FFH Poster Checklist 
 
 * [ ] Frequency Distribution predicts load on memory 
+* [ ] Grouping Variable on Features
+* [ ] Sensory Informaiton 
 * [ ] Mixed Effects (eventually) 
 
 ## Long To Do 
@@ -32,3 +34,9 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 * [X] Create Plots for CogMir Talk 
 * [X] Create Function File to aggregate all individual responses
 * [X] Save all participant demo table as separate file 
+
+## Limitations 
+
+* [ ] Only do this with Major, need to have separate processing 
+	Brings up question of separate major minor storage primes
+

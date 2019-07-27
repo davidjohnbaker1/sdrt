@@ -9,6 +9,7 @@ library(viridis)
 #--------------------------------------------------
 # Import 
 demo_data <- read_csv("data/aggregate_data/current_demo_table.csv")
+multi_table <- read_csv("data/aggregate_data/current_multi_table.csv")
 #--------------------------------------------------
 # Create Current Demo Table 
 
@@ -30,7 +31,8 @@ demo_data %>%
   mutate(gender = str_replace_all(string = gender, pattern = "\\F$", replacement = "FEMALE")) %>%
   select(subject_id,age, education, gender, AP, weeks_taking, years_teaching) -> d_table
 
-d_table
+d_table %>%
+  print(n = nrow(d_table))
 
 number_participants <- nrow(d_table)
 #--------------------------------------------------
@@ -63,13 +65,29 @@ demo_data %>%
   ggplot(aes(x = age, fill = gender)) +
   geom_density(alpha = .5) +
   scale_fill_viridis(discrete = TRUE) +
+#  guides(fill=FALSE) + 
   labs(title = "Age and Gender Distribution in Sample",
        x = "Age",
        y =  "Density",
        fill = "Gender",
        subtitle = paste("N =",number_participants,"Mean =", mean_age, "SD = ", sd_age)) +
-  theme_minimal() -> demo_plot_1
+  theme_minimal() -> demo_plot_2
 
-demo_plot_1
+demo_plot_2
 
 # ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_1, device = "png")
+
+#======================================================================================================
+# Check for Screeners ...
+#--------------------------------------------------
+# Average Scores 
+
+# Average Scores By Participant For Exclusion 
+multi_table %>%
+  select(subject, rt, stimulus, score, serial_order) %>%
+  group_by(subject) %>%
+  mutate(mean_score = mean(score)) %>%
+  select(subject, mean_score) %>%
+  distinct() %>%
+  arrange(-mean_score) %>%
+  print(n = nrow(multi_table))

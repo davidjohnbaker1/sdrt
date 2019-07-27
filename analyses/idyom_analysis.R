@@ -35,6 +35,15 @@ idyom_data$referent <- create_referent(keysig = idyom_data$keysig, modal = idyom
 # Cpint - Referent 
 idyom_data$scale_degree <- (idyom_data$cpitch - idyom_data$referent) %% 12
 #--------------------------------------------------
+# Get IC for Only Single Notes 
+
+idyom_data %>%
+  group_by(scale_degree) %>%
+  summarise(mean_ic = mean(information.content)) %>%
+  arrange(-mean_ic)
+
+
+#--------------------------------------------------
 View(idyom_data)
 source(file = "analyses/find_idyom_gram_functions.R")
 #--------------------------------------------------
