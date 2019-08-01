@@ -1,0 +1,7 @@
+ ,Dependent variable,,,Dependent variable,,,Dependent variable,,
+Predictors,Estimates,CI,p,Estimates,CI,p,Estimates,CI,p
+Number of Notes,-0.03,-0.04 – -0.03,<0.001,,,,,,
+step.cont.loc.var,,,,-1.1,-1.18 – -1.01,<0.001,,,
+IDyOM IC,,,,,,,-0.02,-0.02 – -0.02,<0.001
+Observations,936,,,936,,,936,,
+Marginal R2,0.17,,,0.41,,,0.66,,

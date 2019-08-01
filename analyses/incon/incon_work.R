@@ -13,4 +13,3 @@ incon(chord,model = "all")
 # Merge on Single Notes 
 # Merge on Sequences 
 
-?incon

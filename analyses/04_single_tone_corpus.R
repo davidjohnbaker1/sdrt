@@ -64,13 +64,12 @@ single_corz %>%
   filter(degree != "3-") -> single_corz
 
 single_corz
-#--------------------------------------------------
+
 # Get LE 
 
 single_corz %>%
   left_join(krummy) -> single_corz
 
-single_corz
 
 cor(single_corz$krumhansl, 
     single_corz$avg_correct,
@@ -155,7 +154,7 @@ ggsave(filename = "ffh_poster/dual_plot.png", dual_plot, device = "png")
 
 #ggsave(filename = "ffh_poster/ffh_rt.png",plot = ffh_rt,device = "png")
 
-
+#======================================================================================================
 #--------------------------------------------------
 # Garbage 
 #--------------------------------------------------

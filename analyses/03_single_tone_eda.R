@@ -114,10 +114,11 @@ single_table %>%
   ggplot(aes(x = scale_degree_f, y = mean_correct, color = key)) +
   geom_point() + 
   theme_minimal() +
+  scale_y_continuous(label = percent) +
   scale_color_viridis(discrete = TRUE, begin = .20, end = .80) +
   labs(title = "Scale Degree Reaction Time",
        x = "Scale Degree", 
-       y = "Reaction Time in ms", color = "Key") -> sdrt_big_key_correct
+       y = "Percent Correct", color = "Key") -> sdrt_big_key_correct
 
 sdrt_big_key_correct
 
@@ -205,6 +206,36 @@ sdrt_big_key_note_correct
 #ggsave(filename = "ffh_poster/sdrt_big_key_note_correct.png",
 #       plot = sdrt_big_key_note_correct,
 #       device = "png")
+
+#--------------------------------------------------
+# What if it's FIRST pitch of melody? (Huron, 2006, p. 65, 66)
+#--------------------------------------------------
+
+huron_start_table <- read_csv("data/aggregate_data/huron_start_table.csv")
+
+huron_start_table %>%
+  rename(scale_degree_pc = scale_degree,
+         melody_start_counts = counts) -> huron_start_table
+
+huron_start_table$scale_degree <- c("do","ra", "re", "me", "mi",
+                                    "fa", "fi","sol","le", "la", 
+                                    "te", "ti")
+
+huron_start_table$scale_degree_f <- factor(huron_start_table$scale_degree, 
+                                           levels = c("do","ra", "re", "me", "mi",
+                                                      "fa", "fi","sol","le", "la", 
+                                                      "te", "ti"))
+
+huron_start_table %>%
+  ggplot(aes( x = scale_degree_f,y = melody_start_counts)) +
+  geom_point(stat = 'identity') +
+  theme_minimal() +
+  labs(title = "Starting Scale Degree of Melody",
+       x = "Scale Degree", 
+       y = "Frequency") -> huron_start_table_plot
+
+huron_start_table
+
 #--------------------------------------------------
 # Make Krumhansl Plot 
 
@@ -231,7 +262,7 @@ krumhansl_1982
 
 
 # MULTI PLOT 
-corpus_counts <- read_csv("data/for_krum_multi_plot.csv")
+corpus_counts <- read_csv("data/aggregate_data//for_krum_multi_plot.csv")
 
 # Set Factor For Graphing 
 corpus_counts$scale_degree_f <- factor(corpus_counts$scale_degree, 
@@ -259,7 +290,10 @@ corpus_counts %>%
 cowplot::plot_grid(sdrt_big_key_note, 
                    sdrt_big_key_note_invert,
                    sdrt_big_key_note_correct,
-                   melo_sol_counts,krumhansl_1982, ncol = 1, nrow = 5) -> krum_mutli_plot
+                   melo_sol_counts,krumhansl_1982,
+                   huron_start_table_plot, 
+                   ncol = 1, 
+                   nrow = 6) -> krum_mutli_plot
 
 
 krum_mutli_plot
@@ -273,12 +307,14 @@ library(ggcorrplot)
 
 corpus_counts %>%
   left_join(krummy) %>%
-  select(avg_correct, avg_rt, count, krumhansl) %>%
+  left_join(huron_start_table) %>%
+  select(avg_correct, avg_rt, count, krumhansl, melody_start_counts) %>%
   round(2) %>%
   rename(`Average Correct` = avg_correct,
          `Average Reaction Time` = avg_rt,
          `Frequency in MeloSol` = count,
-         `Krumhansl 1982` = krumhansl) %>%
+         `Krumhansl 1982` = krumhansl,
+         `Melody Start Counts` = melody_start_counts) %>%
   cor(method = "spearman") %>%
   xtable::xtable()
 

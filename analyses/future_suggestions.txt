@@ -1,0 +1,8 @@
+[10:34 AM, 7/29/2019] Peter Harrison: you have these nice groupings set already (four of them), which makes me think of this: https://arxiv.org/pdf/1810.04651.pdf
+[10:34 AM, 7/29/2019] Peter Harrison: quite a newfangled technique, but could work here
+[10:35 AM, 7/29/2019] Peter Harrison: a regularised regression approach where each group of predictors has its effects 'shrunk' towards the principal components of that group
+[10:35 AM, 7/29/2019] Peter Harrison: halfway house between complete preprocessing with PCA and an all-variable regression, each of which have their disadvantages
+
+Use each model to generate LOOCV predictions for the dataset
+	- combine predictions in another regression model and get sig of pred
+	- computure pairwise correlatoins of LOOCV predictions and compare for signifcants with cocor package

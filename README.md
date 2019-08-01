@@ -4,23 +4,18 @@ Pilot for Scale Degree Reaction Time/ Serial Recall
 
 ## Bugs
 
-* [ ] Missing Three IDYOM Computations !!!!
-
 ## FFH Poster Checklist 
 
-* [ ] Frequency Distribution predicts load on memory 
-* [ ] Grouping Variable on Features
-* [ ] Sensory Informaiton 
-* [ ] Mixed Effects (eventually) 
+* [ ] incon features for stimuli
 
 ## Long To Do 
 
-* [ ] Start Mixed Effects Modeling List 
-* [ ] Fill in Rest of Fantastic Features
-* [ ] incon features for stimuli
-* [ ] Group Analyses for Talk 
-
 * [X] Model with IDyOM 
+* [X] Frequency Distribution predicts load on memory 
+* [X] Group Analyses for Talk 
+* [X] Fill in Rest of Fantastic Features
+* [X] Start Mixed Effects Modeling List 
+* [X] Missing Three IDYOM Computations !!!! (dropped items) 
 * [X] IDyOM Features for Stimuli 
 * [X] Clean Directory 
 * [X] 1 in trial answer in multi 

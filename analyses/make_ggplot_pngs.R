@@ -71,3 +71,8 @@ ggsave(filename = "ffh_poster/dual_plot.png", dual_plot, device = "png")
 
 ggsave(filename = "ffh_poster/item_map.png",plot = item_difficulty_map, device = "png")
 
+ggsave(filename = "ffh_poster/ffh_cow2.png",plot = cow2, device = "png")
+
+ggsave(filename = "ffh_poster/big_cor_table.png", plot = big_cor_table, device = "png")
+
+

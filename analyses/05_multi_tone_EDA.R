@@ -99,35 +99,13 @@ modeling_table %>%
 
  item_difficulty_map
 
-ggsave(filename = "ffh_poster/item_map.png",plot = item_difficulty_map, device = "png")
-
-
-#======================================================================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#ggsave(filename = "ffh_poster/item_map.png",plot = item_difficulty_map, device = "png")
 
 
 
 #======================================================================================================
 # Make Univariate Feature Cow-Plot
 #--------------------------------------------------
-
 
 modeling_table %>%
   # Only Grab Stimuli where Three or More (for Full FANTASTIC)
@@ -208,6 +186,58 @@ modeling_table %>%
   labs(x = "Interval Entropy", y = "Percentage Correct",
        title = "Interval Entropy") +
   scale_y_continuous(labels = percent) -> intervalentropy_plot 
+#--------------------------------------------------
+# extras 
+#--------------------------------------------------
+# tonalness, 
+modeling_table %>%
+  # Only Grab Stimuli where Three or More (for Full FANTASTIC)
+  filter(Gram == "Three" | Gram == "Five" | Gram == "Seven" | Gram == "Nine") %>%
+  # Now Have all stimuli (28 That Qualify)
+  group_by(stimulus) %>%
+  # Calculate Average Correct For EacH Stimuli 
+  mutate(mean_correct = mean(score)) %>%
+  # Plot It 
+  ggplot(aes(x = tonalness, y = mean_correct)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Tonalness", y = "Percentage Correct",
+       title = "Tonalness")  -> tonalness_plot 
+
+
+#p.entropy
+modeling_table %>%
+  # Only Grab Stimuli where Three or More (for Full FANTASTIC)
+  filter(Gram == "Three" | Gram == "Five" | Gram == "Seven" | Gram == "Nine") %>%
+  # Now Have all stimuli (28 That Qualify)
+  group_by(stimulus) %>%
+  # Calculate Average Correct For EacH Stimuli 
+  mutate(mean_correct = mean(score)) %>%
+  # Plot It 
+  ggplot(aes(x = p.entropy, y = mean_correct)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Pitch Entropy", y = "Percentage Correct",
+       title = "Pitch Entropy") -> pitchentropy_plot 
+
+# int.cont.glob.dir
+modeling_table %>%
+  # Only Grab Stimuli where Three or More (for Full FANTASTIC)
+  filter(Gram == "Three" | Gram == "Five" | Gram == "Seven" | Gram == "Nine") %>%
+  # Now Have all stimuli (28 That Qualify)
+  group_by(stimulus) %>%
+  # Calculate Average Correct For EacH Stimuli 
+  mutate(mean_correct = mean(score)) %>%
+  # Plot It 
+  ggplot(aes(x = int.cont.glob.dir, y = mean_correct)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "int.cont.glob.dir", y = "Percentage Correct",
+       title = "Interpolation Contour Global Direction") -> intcontglobdir_plot 
+
 
 #======================================================================================================
 # Make IDYOM Univariate Plot 
@@ -277,21 +307,29 @@ intervalentropy_plot
 count_plot
 # cum IC 
 idyom_regression_plot
+# Tonalenss 
+tonalness_plot
+
+# pitch entropy 
+pitchentropy_plot
+# int 
+intcontglobdir_plot
 # Leman
 # MAKE MEEE
 #--------------------------------------------------
 
 cowplot::plot_grid(len_plot,stepcontourlocalvar_plot,intervalabsrange_plot, 
-                   intervalentropy_plot, count_plot, idyom_regression_plot) -> cow2
+                   intervalentropy_plot, count_plot, idyom_regression_plot,
+                   tonalness_plot, pitchentropy_plot, intcontglobdir_plot) -> cow2
 
-ggsave(filename = "ffh_poster/ffh_cow2.png",plot = cow2, device = "png")
+cow2
+
+#ggsave(filename = "ffh_poster/ffh_cow2.png",plot = cow2, device = "png")
 
 #======================================================================================================
 # Make FANTASTIC 
 #--------------------------------------------------
 # 3, 5, 7 , 9 Univariate Features
-
-
 
 modeling_table %>%
   # Only Grab Stimuli where Three or More (for Full FANTASTIC)
@@ -338,7 +376,9 @@ hand_in %>%
        fill = "Feature Category") +
   scale_y_continuous(limits = c(-1,1)) -> big_cor_table 
 
-ggsave(filename = "ffh_poster/big_cor_table.png", plot = big_cor_table, device = "png")
+big_cor_table
+
+# ggsave(filename = "ffh_poster/big_cor_table.png", plot = big_cor_table, device = "png")
 
 #======================================================================================================
 # Simple Regressions 
@@ -364,4 +404,114 @@ summary(step_model)
 
 idyom_number_contour_lm <- lm(avg_correct ~ average_ic + len + step.cont.loc.var, data = reg_data)
 
+#======================================================================================================
+# Mixed Effects??
+library(lmerTest)
+library(MuMIn)
+library(sjPlot)
+
+#--------------------------------------------------
+# Dependant Variable -- Score (0-100%) on each individual's partial response
+
+#--------------------------------------------------
+# Fixed Effects -- Gram (number of Notes)
+
+#--------------------------------------------------
+# Random Effects -- Participant 
+#--------------------------------------------------
+
+
+#--------------------------------------------------
+# Get Data 
+#--------------------------------------------------
+modeling_table %>%
+  filter(Gram == "Three" | Gram == "Five" | Gram == "Seven" | Gram == "Nine") %>%
+  group_by(stimulus) %>%
+  mutate(dv_score = mean(score)) %>%
+  ungroup(stimulus) %>%
+  select(subject,stimulus, dv_score, average_ic, Gram, Count, step.cont.loc.var, trial_length) %>%
+  distinct() -> me_table
+
+#--------------------------------------------------
+# Need to Drop two More data Points
+
+me_table %>%
+  filter(stimulus != "v5 v4 v6+ ^7 ^3+ v3 v2 v5 ^4") %>% # Idyom not found 
+  filter(stimulus != "v1 ^2 v1 v7 ^1 ^3 v2") %>%
+  filter(stimulus != "v1 v7- v7-") %>%                   # Need global contour calculation 
+  filter(stimulus != "^3 ^4 ^5 ^6 v5 v4 v3 v2 v1") -> me_table
+
+me_table
+
+#--------------------------------------------------
+# Declare Models 
+#--------------------------------------------------
+
+me_table %>%
+  select(Gram)  %>% distinct()
+
+null_model <- lmer(dv_score ~  ( 1 | subject ), data = me_table, REML = FALSE)
+
+anova(null_model, idyom_only_model)
+
+# Only IDyOM 
+idyom_only_model <- lmer(dv_score ~ average_ic + (1+average_ic|subject), data = me_table, REML = FALSE)
+
+# Number of Notes 
+note_only_model <- lmer(dv_score ~ trial_length + (1+trial_length|subject), data = me_table,REML = FALSE)
+
+# Contour 
+sclv_only_model <- lmer(dv_score ~ step.cont.loc.var + (1+step.cont.loc.var|subject), data = me_table,REML = FALSE)
+
+combo <- lmer(dv_score ~ average_ic + trial_length + (1+average_ic|subject), data = me_table, REML = FALSE)
+
+combo2 <- lmer(dv_score ~ average_ic + trial_length + step.cont.loc.var + (1+average_ic|subject), data = me_table, REML = FALSE)
+
+#--------------------------------------------------
+# Model Summaries 
+plot(idyom_only_model)
+summary(idyom_only_model)
+
+plot(note_only_model)
+summary(note_only_model)
+
+plot(sclv_only_model)
+summary(sclv_only_model)
+
+
+#--------------------------------------------------
+# Get R2 Values 
+
+MuMIn::r.squaredGLMM(null_model)
+
+MuMIn::r.squaredGLMM(note_only_model)
+MuMIn::r.squaredGLMM(sclv_only_model)
+MuMIn::r.squaredGLMM(idyom_only_model)
+
+MuMIn::r.squaredGLMM(combo)
+MuMIn::r.squaredGLMM(combo2)
+
+#--------------------------------------------------
+# ANOVAs
+anova(null_model, idyom_only_model, combo, combo2)
+
+#--------------------------------------------------
+# HTML Tables
+
+tab_model(note_only_model,
+          sclv_only_model,
+          idyom_only_model,
+          show.r2 = TRUE,show.intercept = FALSE)
+
+
+MuMIn::r.squaredGLMM(note_only_model)
+MuMIn::r.squaredGLMM(sclv_only_model)
+MuMIn::r.squaredGLMM(idyom_only_model)
+
+# Paste to CSV, run thru https://www.tablesgenerator.com/latex_tables
+# add resize and \hline 
+
+#--------------------------------------------------
+# Plots of All trajectories
+# Facet Wrap by number of notes 
 
