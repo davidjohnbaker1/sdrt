@@ -319,8 +319,9 @@ intcontglobdir_plot
 #--------------------------------------------------
 
 cowplot::plot_grid(len_plot,stepcontourlocalvar_plot,intervalabsrange_plot, 
-                   intervalentropy_plot, count_plot, idyom_regression_plot,
-                   tonalness_plot, pitchentropy_plot, intcontglobdir_plot) -> cow2
+                   intervalentropy_plot, count_plot, idyom_regression_plot
+                   #,tonalness_plot, pitchentropy_plot, intcontglobdir_plot
+                   ) -> cow2
 
 cow2
 
@@ -378,7 +379,7 @@ hand_in %>%
 
 big_cor_table
 
-# ggsave(filename = "ffh_poster/big_cor_table.png", plot = big_cor_table, device = "png")
+#ggsave(filename = "ffh_poster/big_cor_table.png", plot = big_cor_table, device = "png")
 
 #======================================================================================================
 # Simple Regressions 
@@ -514,4 +515,13 @@ MuMIn::r.squaredGLMM(idyom_only_model)
 #--------------------------------------------------
 # Plots of All trajectories
 # Facet Wrap by number of notes 
+#--------------------------------------------------
+# Cogmir Stimuli Selection Plot
 
+deg_patterns <- read_tsv("corpus/deg_patterns.tsv", col_names = c("count","pattern","gram"))
+
+deg_patterns %>%
+  ggplot(aes( x = reorder(pattern, -count), y = count, color = gram)) +
+  geom_bar(stat = 'identity') +
+  theme_minimal() + 
+  coord_fixed()

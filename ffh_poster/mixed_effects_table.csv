@@ -1,0 +1,6 @@
+ ,dv score,,,dv score,,,dv score,,
+Predictors,Estimates,CI,p,Estimates,CI,p,Estimates,CI,p
+Number of Notes,-0.03,-0.04 – -0.03,<0.001,,,,,,
+step.cont.loc.var,,,,-1.09,-1.17 – -1.01,<0.001,,,
+IDyOM IC,,,,,,,-0.02,-0.02 – -0.02,<0.001
+Marginal R2,0.172,,,0.415,,,0.665,,

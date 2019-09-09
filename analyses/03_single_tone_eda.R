@@ -4,6 +4,9 @@
 # This script makes plots of large scale 
 # experiment for visualizing
 # Used with FFH SMPC2019 Poster
+library(scales)
+library(viridis)
+library(tidyverse)
 #--------------------------------------------------
 # Import Data ####
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
@@ -178,8 +181,8 @@ single_table %>%
 
 sdrt_big_key_note_invert
 
-#ggsave(filename = "ffh_poster/sdrt_big_key_note.png",
-#       plot = sdrt_big_key_note,
+#ggsave(filename = "ffh_poster/sdrt_big_key_note_invert.png",
+#       plot = sdrt_big_key_note_invert,
 #       device = "png")
 
 single_table %>%

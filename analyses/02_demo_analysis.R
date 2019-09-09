@@ -32,7 +32,7 @@ demo_data %>%
   select(subject_id,age, education, gender, AP, weeks_taking, years_teaching) -> d_table
 
 d_table %>%
-  print(n = nrow(d_table))
+  print(n = nrow(d_table)) 
 
 number_participants <- nrow(d_table)
 #--------------------------------------------------
@@ -75,7 +75,7 @@ demo_data %>%
 
 demo_plot_2
 
-# ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_1, device = "png")
+ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_2, device = "png")
 
 #======================================================================================================
 # Check for Screeners ...
