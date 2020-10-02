@@ -53,7 +53,7 @@ single_n_counts %>%
 single_1 %>%
   left_join(single_n_counts) -> single_corz 
 
-write_csv(single_corz,"data/for_krum_multi_plot.csv")
+#write_csv(single_corz,"data/for_krum_multi_plot.csv")
 
 
 single_corz %>%
@@ -150,7 +150,7 @@ cowplot::plot_grid(ffh_correct, ffh_rt,nrow = 2,ncol = 1) -> dual_plot
 
 dual_plot
 
-ggsave(filename = "ffh_poster/dual_plot.png", dual_plot, device = "png")
+#ggsave(filename = "ffh_poster/dual_plot.png", dual_plot, device = "png")
 
 #ggsave(filename = "ffh_poster/ffh_rt.png",plot = ffh_rt,device = "png")
 

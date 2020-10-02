@@ -361,7 +361,7 @@ modeling_table %>%
   arrange(-Correlation) %>%
   mutate(absCor = abs(Correlation)) -> hand_add_categories
 
-write_csv(hand_add_categories,path = "ffh_poster/correlations_out.csv")  
+#write_csv(hand_add_categories,path = "ffh_poster/correlations_out.csv")  
 hand_in <- read_csv("ffh_poster/correlations_in.csv")  
 
 hand_in %>%

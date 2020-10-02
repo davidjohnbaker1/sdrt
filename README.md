@@ -2,14 +2,11 @@
 
 Pilot for Scale Degree Reaction Time/ Serial Recall
 
-## Paper To-Do
+## TODO 
+ 
+* [ ] Calculate total notes from melosol 
 
-* [ ] Make Figure with Similar Notes 
-	- Two melodies
-	- Increasing IC
-	- FANTASTIC Comptuations 
-* [ ] Smooth Discussion Writing
-* [ ] Prepare C4DM Slides 
+
 
 ## Long To Do 
 

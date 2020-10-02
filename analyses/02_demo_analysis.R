@@ -75,7 +75,7 @@ demo_data %>%
 
 demo_plot_2
 
-ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_2, device = "png")
+#ggsave(filename = "ffh_poster/demo_plot1.png",x =demo_plot_2, device = "png")
 
 #======================================================================================================
 # Check for Screeners ...

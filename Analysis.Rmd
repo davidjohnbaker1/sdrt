@@ -1,0 +1,487 @@
+---
+title: "Manuscript Analysis"
+author: "David John Baker"
+date: "30/09/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+This markdown documents the analyses used in the paper "SDRT".
+
+Analyses here reflect comments after presenting this work at SMPC 2019, COGMIR 19, and at Marcus Pearce's Lab Meeting in Fall of 2019.
+
+The text below is used in the Methods, Modeling and Results section of the manuscript.
+
+# Data Import and Cleaning 
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(scales)
+
+# Demographic Data
+demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
+
+# Single Tone Condition
+single_tone_condition_table <- read_csv("data/aggregate_data/current_single_table.csv")
+
+# Multi Tone Conditions 
+multi_tone_response_table <- read_csv("data/aggregate_data/current_multi_table.csv")
+```
+
+# Methods 
+
+```{r}
+demographic_data %>%
+  mutate(new_age = str_remove_all(string = age, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
+  mutate(new_age = str_remove_all(string = new_age, pattern = "\\\\\\}")) %>%
+  mutate(age = as.numeric(new_age)) %>%
+  mutate(education = str_remove_all(string = education, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
+  mutate(education = str_remove_all(string = education, pattern = "\\\\\\}")) %>%
+  mutate(gender = str_remove_all(string = gender, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
+  mutate(gender = str_remove_all(string = gender, pattern = "\\\\\\}")) %>%
+  mutate(AP = str_remove_all(string = AP, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
+  mutate(AP = str_remove_all(string = AP, pattern = "\\\\\\}")) %>%
+  mutate(weeks_taking = str_remove_all(string = weeks_taking, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
+  mutate(weeks_taking = str_remove_all(string = weeks_taking, pattern = "\\\\\\}")) %>%
+  mutate(years_teaching = str_remove_all(string = years_teaching, pattern = "\\{\\\\Q0\\\\\\:\\\\")) %>%
+  mutate(years_teaching = str_remove_all(string = years_teaching, pattern = "\\\\\\}")) %>%
+  mutate(gender = str_to_upper(gender)) %>%
+  mutate(gender = str_replace_all(string = gender, pattern = "\\F$", replacement = "FEMALE")) %>%
+  select(subject_id,age, education, gender, AP, weeks_taking, years_teaching) -> d_table
+
+d_table %>%
+  print(n = nrow(d_table)) 
+
+d_table$age %>% mean()
+d_table$age %>% sd()
+d_table$age %>% range()
+
+d_table %>%
+  group_by(gender) %>%
+  tally()
+
+```
+
+
+# Modeling
+
+Data from this experiment are reported following the three hypotheses listed above.
+
+1. H1: Musical notes that occur more frequently in a musical corpora will be recalled more accurately and quickly than less frequently occurring musical patterns. 
+2. H2: Exploratory analysis of computationally derived univariate features. 
+3. H3: Mixed effects regression analysis modeling both accuracy and response time using theoretically motivated predictors of information content via computationally derived features. 
+Participants were excluded from this study if they performed at chance levels in the single tone condition.
+Chance level performance was taken to be indicitive that participants did not have the pre-requisite skills in order to partake in the experiment.
+No participants were excluded from the study.
+
+```{r}
+single_tone_condition_table %>%
+  group_by(subject) %>%
+  summarise(mean_score = mean(score)) %>%
+  arrange(mean_score)
+
+multi_tone_response_table %>% 
+  group_by(subject) %>%
+  summarise(mean_score = mean(score)) %>%
+  arrange(mean_score)
+```
+
+In order to examine the hypothesis that more frequently occurring musical notes will be recalled more accurately and quickly than less frequently occurring notes we adopt the following operationalizations. We define accuracy as the average percent of tones that were correctly identified across a participant’s trial. Response time was measured in milliseconds to respond. Frequency of occurrence is modeled using zeroth order distribution frequency of occurrence in the MeloSol corpus, zeroth order frequency of starting tones in the MeloSol corpus, zeroth order frequency distribution in the Essen Folk Song Collection (Schaffrath 1995). Correlations between reaction time of trials, average accuracy, and the three measures of frequency of occurrence and presented in TABLE 1 with their frequency of distribution displayed in PANEL X. Correlations reported are Spearman rank order. As the experimental paradigm only consisted of a major key prime, scale degrees from minor keys are not included in the frequency count.
+
+* Caclulate average score of each trial across all participants
+
+* Accuracy ~ MeloSol Frequency Count 
+* Accuray ~ MeloSol Starting Note Count 
+* Accuray ~ Essen Frequnecy Count 
+
+First check for no main effect of key. 
+
+```{r}
+#----------------------------------------------------------------------
+# Check for No Effect of Key 
+single_tone_condition_table %>%
+  group_by(stimuli_together) %>%
+  summarise(mean_score = mean(score)) %>%
+  arrange(desc(mean_score)) %>%
+  mutate(key = str_remove_all(stimuli_together, "-.*$")) %>%
+  select(mean_score, key) -> effect_of_key
+
+effect_of_key %>%
+  ggplot(aes(x = key, y = mean_score)) +
+  geom_boxplot()
+
+# No Main Effect of Key 
+effect_of_key_model <- aov(mean_score ~ key, data = effect_of_key)
+summary(effect_of_key_model)
+
+# Extract mean and sd RT for correct responses 
+1066/1482
+
+single_tone_condition_table %>%
+  filter(score == 1) %>%
+  group_by(scale_degree) %>%
+  summarise(mean_rt = mean (rt),
+            sd_rt = sd(rt)) %>%
+  mutate(z_mean_rt = scale(mean_rt),
+         z_mean_sd = scale(sd_rt),
+         z_mean_rt_inv = z_mean_rt * -1) -> correct_single_tone_rt
+  
+```
+
+Import count data for correlation plots
+
+### Hypothesis I 
+
+```{r}
+#--------------------------------------------------
+# MELOSOL TOTAL FREQUENCY
+#--------------------------------------------------
+# Total Counts of All Notes 
+corpus_counts <- read_csv("data/aggregate_data/for_krum_multi_plot.csv")
+
+# coding error from original 
+corpus_counts <- corpus_counts %>%
+  select(-scale_degree_f)
+
+# coding error in original 
+corpus_counts[corpus_counts$degree == "1-",1] <- "ra"
+
+# 36,000 notes from MeloSol 
+sum(corpus_counts$count)
+
+# Set Factor For Graphing 
+corpus_counts$scale_degree_f <- factor(corpus_counts$scale_degree, 
+                                      levels = c("do","ra", "re", "me", "mi",
+                                                 "fa", "fi","sol","le", "la", 
+                                                 "te", "ti"))
+
+corpus_counts %>%
+  select(scale_degree, scale_degree_f, count, degree) %>%
+  rename(melosol_total_count = count) -> melosol_freq_count_table
+
+#--------------------------------------------------
+# MELOSOL STARTING PITCH FREQUENCY
+#--------------------------------------------------
+
+# First Pitch (Huron, 2006, p. 65, 66) via MeloSol
+huron_start_table <- read_csv("data/aggregate_data/huron_start_table.csv")
+
+# 767 Melody Starts 
+sum(huron_start_table$counts)
+
+huron_start_table %>%
+  rename(scale_degree_pc = scale_degree,
+         melody_start_counts = counts) -> huron_start_table
+
+huron_start_table$scale_degree <- c("do","ra", "re", "me", "mi",
+                                    "fa", "fi","sol","le", "la", 
+                                    "te", "ti")
+
+huron_start_table$scale_degree_f <- factor(huron_start_table$scale_degree, 
+                                           levels = c("do","ra", "re", "me", "mi",
+                                                      "fa", "fi","sol","le", "la", 
+                                                      "te", "ti"))
+
+melosol_freq_count_table %>%
+  left_join(huron_start_table) -> melosol_freq_count_table
+
+
+#-----------------------------------------------------------
+# ESSEN TOTAL COUNTS 
+# Table of How Many times each SD occurs in Essen 
+#------------------------------------------------------------
+essen_table <- read_tsv("data/aggregate_data/essen_counts.tsv", col_names = FALSE)
+essen_table <- essen_table %>%
+  rename(count = X1,
+         degree = X2)
+
+melosol_freq_count_table <- melosol_freq_count_table %>%
+  left_join(essen_table)
+
+#-------------------------------------------------------------
+# Create Correlations Between Avg Correct AND MeloSol (2) and Essen 
+# Reaction time included as well ???
+
+# Remove Minor Key Notes due to major prime in Experiment 
+
+melosol_freq_count_table 
+
+single_tone_condition_table %>%
+  group_by(scale_degree) %>%
+  summarise(mean_score = mean(score),
+            sd_score = sd(score)) %>%
+  arrange(desc(mean_score)) -> avg_single_tone_score_table
+
+melosol_freq_count_table %>%
+  left_join(avg_single_tone_score_table) %>%
+  mutate(z_ms_total = scale(melosol_total_count),
+         z_ms_start = scale(melody_start_counts),
+         z_essen = scale(count),
+          z_mean_score = scale(mean_score)) -> h1_table
+
+colnames(h1_table)
+
+h1_table$degree_f <- factor(h1_table$degree, levels = c("1", "1-","2-", "2","3-","3", "3+", "4", "4+", 
+                                                    "5-", "5", "6-", "6", "6+", "7-", "7",  "7+"))
+
+h1_table %>%
+  left_join(correct_single_tone_rt) -> h1_table
+
+h1_table %>%
+  select(starts_with("z"))
+
+#--------------------------------------------
+# Calculate Correlations 
+h1_table %>%
+  # filter(degree != "1-") %>% # Enharmonic
+  # filter(degree != "6-") %>% # Remove Minor Notes (Since Major Experiment Prime)
+  # filter(degree != "6+") %>% # Remove Minor Notes (Since Major Experiment Prime)
+  # filter(degree != "7+") %>%
+  # filter(degree != "5-") %>%
+  # filter(degree != "3+") %>%
+  select(starts_with("z"), mean_score) %>%
+  cor(use = "complete.obs", method = "spearman")
+
+# Experimental Correlations 
+cor.test(h1_table$z_mean_score, h1_table$z_ms_total, method = "spearman", alternative = "greater")
+cor.test(h1_table$z_mean_score, h1_table$z_ms_start, method = "spearman", alternative = "greater")
+cor.test(h1_table$z_mean_score, h1_table$z_essen, method = "spearman", alternative = "greater")
+
+# Corpus Correlations (Check MANUSCRIPT)
+cor.test(h1_table$z_ms_total, h1_table$z_essen, method = "spearman", alternative = "greater")
+cor.test(h1_table$z_ms_start, h1_table$z_essen, method = "spearman", alternative = "greater")
+cor.test(h1_table$z_ms_start, h1_table$z_ms_total, method = "spearman", alternative = "greater")
+
+colors_h1 <- c("z_ms_total" = "green", 
+            "z_ms_start" = "blue", 
+            "z_essen" = "red",
+            "z_mean_score" = "black")
+
+h1_table %>%
+  filter(!is.na(degree_f)) %>%
+  ggplot(aes(x = degree_f)) +
+  geom_point(aes(y = z_ms_total, color = "z_ms_total"),   group  = 1) +
+  geom_line(aes(y = z_ms_total,  color = "z_ms_total"),  group = 1) +
+  geom_point(aes(y = z_ms_start, color = "z_ms_start"),  group = 2) +
+  geom_line(aes(y = z_ms_start,  color = "z_ms_start"),  group = 2) +
+  geom_point(aes(y = z_essen,  color = "z_essen"),    group = 3) + 
+  geom_line(aes(y = z_essen,  color = "z_essen"),     group = 3) +
+  geom_point(aes(y = z_mean_score, color = "z_mean_score"),group = 4) + 
+  geom_line(aes(y = z_mean_score, color = "z_mean_score"), group = 4) +
+  theme_minimal() +
+  labs(title = "Normalized Scale Degree Frequency and Mean Accuracy",
+       subtitle = "CHECK LABELS",
+       x = "Scale Degree",
+       y = "z score",
+       color = "Legend") +
+      scale_color_manual(values = colors_h1,
+                         labels = c("All Notes in MeloSol",
+                                    "Starting Notes in MeloSol",
+                                    "All Notes in Essen",
+                                    "Mean Accuracy of Experiment")) -> mean_rt_corpus_figure
+
+mean_rt_corpus_figure
+
+ggsave(filename = "figures/mean_rt_corpus.png", 
+       mean_rt_corpus_figure, 
+       width = 9, height = 4, units = "in")
+
+#--------------------------------
+# Reaction Time and Accuracy 
+colors_h1_behavioral <- c("z_mean_score" = "black",
+            "z_mean_rt_inv" = "blue")
+
+# RT Correlations 
+cor.test(h1_table$z_mean_rt_inv, h1_table$z_mean_score, method = "spearman", alternative = "greater")
+
+h1_table %>%
+  filter(!is.na(degree_f)) %>%
+  ggplot(aes(x = degree_f)) +
+  geom_point(aes(y = z_mean_score, color = "z_mean_score"),group = 1) + 
+  geom_line(aes(y = z_mean_score, color = "z_mean_score"), group = 1) +
+  geom_line(aes(y = z_mean_rt_inv, color = "z_mean_rt_inv"), group = 2) +
+  geom_line(aes(y = z_mean_rt_inv, color = "z_mean_rt_inv"), group = 2) +
+  theme_minimal() +
+  labs(title = "Normalized Mean Accuracy and Inverted Reaction Time",
+       subtitle = "Spearman's RHO (XX) = .861",
+       x = "Scale Degree",
+       y = "z score",
+       color = "Legend") +
+      scale_color_manual(values = colors_h1_behavioral,
+                         labels = c("Mean Accuracy All Trials",
+                                    "Inverted RT of Correct Trials")) -> mean_rt_corpus_figure_behavioral
+
+mean_rt_corpus_figure_behavioral
+
+ggsave(filename = "figures/mean_rt_corpus_behavioral.png", 
+       mean_rt_corpus_figure_behavioral, 
+       width = 9, height = 4, units = "in")
+```
+
+### Hypothesis II 
+
+* Import in all theoretical variables of interest
+* Plot each feature against mean performance of variable 
+
+
+* IDYOM - Mean IC 
+* IDYOM - Cumulitive IC 
+* IDYOM -- Three Viewpoints
+
+* FANTASTIC 
+
+Three separate IDyOM models were run, the first using CPINT, the second CPINTREF, and the third using a combination of the CPINT and CPINTREF viewpoints. The information content as determined for each n-gram within each model was averaged.
+
+
+```{r}
+#======================================================================================================
+# FANTASTIC DATA
+fantastic_features <- read_csv("experiment_materials/new_stimuli/MelodyFeatures.csv")
+#------------------------------------------------------------------------------------
+# Clean FANTASTIC 
+#--------------------------------------------------
+fantastic_features %>%
+  rename(stimulus = file.id) -> fantastic_features
+
+
+fantastic_features$stimulus <- gsub(pattern = "m",replacement = "", fantastic_features$stimulus)
+fantastic_features$stimulus <- gsub(pattern = "ono",replacement = "", fantastic_features$stimulus)
+fantastic_features$stimulus <- gsub(pattern = "_",replacement = " ", fantastic_features$stimulus)
+fantastic_features$stimulus <- str_trim(fantastic_features$stimulus, side = "right")
+
+fantastic_features$stimulus
+
+View(fantastic_features)
+#------------------------------------------------------------------------------------
+# IDYOM Data 
+
+# Model 1
+
+# Model 2
+
+# Model 3
+
+
+
+
+
+#--------------------------------------------
+# OLD DATA
+# Import Data ####
+idyom_computations <- read_csv("data/aggregate_data/idyom_computation.csv")
+
+View(idyom_computations)
+
+#--------------------------------------------------
+# Krumhansl 1982 ratings
+krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88)
+scale_degree <- c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti")
+krummy <- data.frame(krumhansl,scale_degree)
+
+cogmir_counts <- read_csv("experiment_materials/stimuli_lists/cogmir_stimuli.csv")
+#--------------------------------------------------
+# Join Perceptal Data to CogMIR counts
+
+# Drop X1
+multi_table %>%
+  select(-X1) -> multi_table
+
+# Clean Up Stimulus Variable For Merge
+multi_table$stimulus <- gsub(pattern = "_",replacement = " ", x = multi_table$stimulus)
+
+cogmir_counts %>%
+  rename(stimulus = Pattern) -> cogmir_counts
+
+multi_table %>%
+  left_join(cogmir_counts) -> SLH_table
+
+idyom_computations$stimulus <- gsub(pattern = "_", replacement = " ",x = idyom_computations$stimulus)
+
+SLH_table %>%
+  left_join(idyom_computations) -> idyom_analysis_table 
+
+idyom_analysis_table
+
+#======================================================================================================
+idyom_analysis_table %>%
+  left_join(fantastic_features) -> modeling_table
+
+for_groups <- as.data.frame(names(modeling_table))
+
+for_groups
+
+#write_csv(x = for_groups, path = "imgs/group_plots_output.csv")
+
+#--------------------------------------------------
+# Names for Table
+
+for_graph_lables <- read_csv("pilot_imgs/group_plots_input.csv",
+                             col_names = c("names","theory"))
+for_graph_lables
+
+
+
+
+
+```
+
+
+
+```{r}
+# Scratch 
+# Only Complete Trials 
+multi_tone_response_table %>%
+  group_by(subject, stimulus) %>%
+  mutate(trial_score = mean(score)) %>%
+  filter(trial_score == 1) %>%
+  ungroup(subject, stimulus) %>%
+  group_by(serial_order, stimulus) %>%
+  mutate(mean_rt = mean(rt)) %>%
+  ggplot(aes(x = serial_order, y = mean_rt, color = stimulus)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~trial_length)
+
+  
+
+
+
+# how many complete trials do i have
+# Does that change over n increase 
+
+multi_tone_response_table %>%
+  mutate(unique_trial = paste(subject, stimulus)) %>%
+  left_join(trial_totaller) %>%
+  group_by(unique_trial) 
+
+
+
+multi_tone_response_table %>%
+  filter(trial_length == 3) %>%
+  group_by(serial_order, stimulus) %>%
+  mutate(mean_score = mean(score),
+         mean_rt = mean(rt)) %>%
+  ggplot(aes(x = serial_order, y = mean_score, color = stimulus)) +
+  geom_point() +
+  geom_smooth()
+
+
+multi_tone_response_table %>%
+  filter(trial_length == 3) %>%
+  group_by(serial_order, stimulus) %>%
+  mutate(mean_score = mean(score),
+         mean_rt = mean(rt)) %>%
+  ggplot(aes(x = serial_order, y = mean_rt, color = stimulus)) +
+  geom_point() +
+  geom_smooth()
+
+```
+
+
+
+
+

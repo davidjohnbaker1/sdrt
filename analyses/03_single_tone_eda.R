@@ -267,6 +267,8 @@ krumhansl_1982
 # MULTI PLOT 
 corpus_counts <- read_csv("data/aggregate_data//for_krum_multi_plot.csv")
 
+sum(corpus_counts$count)
+
 # Set Factor For Graphing 
 corpus_counts$scale_degree_f <- factor(corpus_counts$scale_degree, 
                                       levels = c("do","ra", "re", "me", "mi",
@@ -301,9 +303,9 @@ cowplot::plot_grid(sdrt_big_key_note,
 
 krum_mutli_plot
 
-ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
-       plot = krum_mutli_plot,
-       device = "png")
+#ggsave(filename = "ffh_poster/krumhansl_multi_plot.png",
+#       plot = krum_mutli_plot,
+#       device = "png")
 
 library(ggcorrplot)
 
