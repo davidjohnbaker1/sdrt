@@ -358,77 +358,98 @@ fantastic_features$stimulus
 View(fantastic_features)
 #------------------------------------------------------------------------------------
 # IDYOM Data 
+cpint_model_1 <- read.delim("data/idyom_ouput/cpint_767.dat")
+cpintref_model_2 <- read.delim("data/idyom_ouput/cpintfref_767.dat")
+cpintcpintref_model_3 <- read.delim("data/idyom_ouput/idyom_data_m3.dat")
 
-# Model 1
+#----------------------------------------
+# FUNCTIONS
+#---------------------------------------
+# Calculate Scale Degree 
 
-# Model 2
+create_referent <- function(keysig, modal){
+  x <- ifelse(test = keysig >= 0, 
+              yes = ((keysig * 7) + modal ) %% 12, 
+              no = ((keysig * -5) + modal) %% 12  )
+  x
+}
 
-# Model 3
+# Chop Down Dataset
+clean_raw_idyom <- function(idyom_output){
+  idyom_output %>%
+  select(melody.id, note.id, melody.name, phrase:pulses,
+         mode:cpitch.entropy,probability, information.content, entropy) %>%
+  mutate(referent = create_referent(keysig = keysig, modal = mode),
+         scale_degree = (cpitch - referent) %% 12) 
+    
+}
+
+cpint_model_1 <- clean_raw_idyom(cpint_model_1)
+cpint_model_1$modelname <- "cpintmodel1"
+cpintref_model_2 <- clean_raw_idyom(cpintref_model_2 )
+cpintref_model_2$modelname <- "cpintrefmodel2"
+cpintcpintref_model_3 <- clean_raw_idyom(cpintcpintref_model_3)
+cpintcpintref_model_3$modelname <- "cpintcpintrefmodel3"
+
+cpint_model_1
+# Select Out All Patterns in Corpus 
+# Import Set of Harcoded Functions to Get SDs from IDyOM data 
+source(file = "analyses/find_idyom_gram_functions.R")
+
+# This is a proof of concept to show it works
+# You give it as first argument the pattern you want as series of integers
+# You also give it the model to get those integer scale degrees from 
+
+gram_finder(245, cpint_model_1) %>%
+  select(melody.name, note.id, scale_degree, information.content, flag) %>%
+  group_by(flag) %>% # Group every instance together 
+  mutate(sum_ic = sum(information.content)) %>% # cumulative add all notes in pattern
+  select(melody.name, sum_ic, flag) %>%
+  distinct() %>% 
+  ungroup(flag) %>% # 
+  summarise(mean_total_ic_sums = mean(sum_ic))
 
 
+#----------------------------------------------------
+# Imports List of Stimuli Patterns used in Experiment with IDyOM notation 
+helpful_list <- read_csv("data/aggregate_data/experimental_stimuli2.csv")
 
+helpful_list$average_ic <- 0
 
+# Stimuli List 
+helpful_list_model_1 <- helpful_list %>%
+  mutate(dataset =  "model1") %>%
+  print(n = 41)
 
-#--------------------------------------------
-# OLD DATA
-# Import Data ####
-idyom_computations <- read_csv("data/aggregate_data/idyom_computation.csv")
+helpful_list_model_2 <- helpful_list %>%
+  mutate(dataset =  "model2") %>%
+  print(n = 41)
 
-View(idyom_computations)
+helpful_list_model_3 <- helpful_list %>%
+  mutate(dataset =  "model3") %>%
+  print(n = 41)
 
-#--------------------------------------------------
-# Krumhansl 1982 ratings
+source(file = "corpus/run_idyom_ic_scripts/run_model_1_idyom_ic.R")
+source(file = "corpus/run_idyom_ic_scripts/run_model_2_idyom_ic.R")
+source(file = "corpus/run_idyom_ic_scripts/run_model_3_idyom_ic.R")
+
+idyom_table <- rbind(helpful_list_model_1, helpful_list_model_2, helpful_list_model_3)
+
+idyom_table %>%
+  ggplot(aes(x = reorder(stimulus, average_ic), y = average_ic, color = dataset)) +
+  geom_point() +
+  coord_flip()
+
+## Frequency in Corpus 
+cogmir_counts <- read_csv("experiment_materials/stimuli_lists/cogmir_stimuli.csv")
+
+# DELETE IF YOU DONT USE
 krumhansl <- c(6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88)
 scale_degree <- c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti")
 krummy <- data.frame(krumhansl,scale_degree)
-
-cogmir_counts <- read_csv("experiment_materials/stimuli_lists/cogmir_stimuli.csv")
-#--------------------------------------------------
-# Join Perceptal Data to CogMIR counts
-
-# Drop X1
-multi_table %>%
-  select(-X1) -> multi_table
-
-# Clean Up Stimulus Variable For Merge
-multi_table$stimulus <- gsub(pattern = "_",replacement = " ", x = multi_table$stimulus)
-
-cogmir_counts %>%
-  rename(stimulus = Pattern) -> cogmir_counts
-
-multi_table %>%
-  left_join(cogmir_counts) -> SLH_table
-
-idyom_computations$stimulus <- gsub(pattern = "_", replacement = " ",x = idyom_computations$stimulus)
-
-SLH_table %>%
-  left_join(idyom_computations) -> idyom_analysis_table 
-
-idyom_analysis_table
-
-#======================================================================================================
-idyom_analysis_table %>%
-  left_join(fantastic_features) -> modeling_table
-
-for_groups <- as.data.frame(names(modeling_table))
-
-for_groups
-
-#write_csv(x = for_groups, path = "imgs/group_plots_output.csv")
-
-#--------------------------------------------------
-# Names for Table
-
-for_graph_lables <- read_csv("pilot_imgs/group_plots_input.csv",
-                             col_names = c("names","theory"))
-for_graph_lables
-
-
-
-
-
 ```
 
+Tables Set, now time to run all univariate measures 
 
 
 ```{r}

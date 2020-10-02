@@ -36,6 +36,7 @@ idyom_data$referent <- create_referent(keysig = idyom_data$keysig, modal = idyom
 idyom_data$scale_degree <- (idyom_data$cpitch - idyom_data$referent) %% 12
 #--------------------------------------------------
 # Get IC for Only Single Notes 
+# Also count data for HURON idea in MELOSOL with start notes
 
 
 idyom_data %>%
@@ -88,6 +89,7 @@ helpful_list %>%
 helpful_list %>% print(n = 40)
 
 helpful_list$average_ic <- 0
+
 
 #--------------------------------------------------
 helpful_list[helpful_list$idyom_notation=="4 9",]$average_ic <- as.numeric(find_2_grams(4,9, idyom_data) 
