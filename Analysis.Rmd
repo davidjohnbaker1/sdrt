@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-This markdown documents the analyses used in the paper "SDRT".
+This markdown documents the analyses used in the paper "Frequently Occuring Melodic Patterns are Easier to Recall".
 
 Analyses here reflect comments after presenting this work at SMPC 2019, COGMIR 19, and at Marcus Pearce's Lab Meeting in Fall of 2019.
 
@@ -18,9 +18,15 @@ The text below is used in the Methods, Modeling and Results section of the manus
 ```{r}
 library(readr)
 library(dplyr)
+library(stringr)
 library(ggplot2)
 library(viridis)
+library(purrr)
+library(broom)
 library(scales)
+library(tidyr)
+library(reshape2)
+
 
 # Demographic Data
 demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
@@ -286,9 +292,9 @@ h1_table %>%
 
 mean_rt_corpus_figure
 
-ggsave(filename = "figures/mean_rt_corpus.png", 
-       mean_rt_corpus_figure, 
-       width = 9, height = 4, units = "in")
+# ggsave(filename = "figures/mean_rt_corpus.png", 
+#        mean_rt_corpus_figure, 
+#        width = 9, height = 4, units = "in")
 
 #--------------------------------
 # Reaction Time and Accuracy 
@@ -316,10 +322,10 @@ h1_table %>%
                                     "Inverted RT of Correct Trials")) -> mean_rt_corpus_figure_behavioral
 
 mean_rt_corpus_figure_behavioral
-
-ggsave(filename = "figures/mean_rt_corpus_behavioral.png", 
-       mean_rt_corpus_figure_behavioral, 
-       width = 9, height = 4, units = "in")
+# 
+# ggsave(filename = "figures/mean_rt_corpus_behavioral.png", 
+#        mean_rt_corpus_figure_behavioral, 
+#        width = 9, height = 4, units = "in")
 ```
 
 ### Hypothesis II 
@@ -348,14 +354,14 @@ fantastic_features %>%
   rename(stimulus = file.id) -> fantastic_features
 
 
+fantastic_features$stimulus
+
 fantastic_features$stimulus <- gsub(pattern = "m",replacement = "", fantastic_features$stimulus)
 fantastic_features$stimulus <- gsub(pattern = "ono",replacement = "", fantastic_features$stimulus)
-fantastic_features$stimulus <- gsub(pattern = "_",replacement = " ", fantastic_features$stimulus)
+fantastic_features$stimulus <- gsub(pattern = "_$",replacement = " ", fantastic_features$stimulus)
 fantastic_features$stimulus <- str_trim(fantastic_features$stimulus, side = "right")
 
 fantastic_features$stimulus
-
-View(fantastic_features)
 #------------------------------------------------------------------------------------
 # IDYOM Data 
 cpint_model_1 <- read.delim("data/idyom_ouput/cpint_767.dat")
@@ -391,7 +397,6 @@ cpintref_model_2$modelname <- "cpintrefmodel2"
 cpintcpintref_model_3 <- clean_raw_idyom(cpintcpintref_model_3)
 cpintcpintref_model_3$modelname <- "cpintcpintrefmodel3"
 
-cpint_model_1
 # Select Out All Patterns in Corpus 
 # Import Set of Harcoded Functions to Get SDs from IDyOM data 
 source(file = "analyses/find_idyom_gram_functions.R")
@@ -435,6 +440,12 @@ source(file = "corpus/run_idyom_ic_scripts/run_model_3_idyom_ic.R")
 
 idyom_table <- rbind(helpful_list_model_1, helpful_list_model_2, helpful_list_model_3)
 
+idyom_table_wide <- cbind(helpful_list[,c(1,2)],helpful_list_model_1[,c(3)], helpful_list_model_2[,c(3)], helpful_list_model_3[,c(3)])
+
+colnames(idyom_table_wide) <- c("stimulus","idyom_notation","IDyOM IC cpint", "IDyOM IC cpintfref","IDyOM IC cpint + cpintfref")
+
+idyom_table_wide
+
 idyom_table %>%
   ggplot(aes(x = reorder(stimulus, average_ic), y = average_ic, color = dataset)) +
   geom_point() +
@@ -453,6 +464,331 @@ Tables Set, now time to run all univariate measures
 
 
 ```{r}
+# Make Response Table 
+multi_tone_response_table %>%
+  group_by(stimulus) %>%
+  mutate(mean_score = mean(score)) %>%
+  filter(trial_length >= 3) %>%
+  select(stimulus, mean_score, trial_length) %>%
+  ungroup(stimulus) %>%
+  distinct()-> target_table
+  
+fantastic_features$stimulus
+
+target_table %>%
+  distinct(stimulus)
+
+cogmir_counts %>%
+  mutate(Pattern = str_replace_all(string = cogmir_counts$Pattern, pattern = " ", replacement = "_")) %>%
+  rename(stimulus = Pattern) -> cogmir_counts
+
+target_table %>%
+  left_join(fantastic_features) %>%
+  left_join(idyom_table_wide) %>%
+  left_join(cogmir_counts) -> feature_table 
+
+
+#-----------------------------------------------
+# Large Feature Table Plot 
+
+feature_table %>%
+  select_if(is.numeric) %>%
+  select(!starts_with("d")) %>%
+  rename(`Frequency Count in Corpus` = Count, 
+         `Number of Notes` = trial_length,
+         `Quintile in Corpus` = quintile) %>%
+  cor(use = "pairwise.complete.obs") %>%
+  melt() %>%
+  filter(Var1 == "mean_score") %>%
+  filter(Var2 != "mean_score") %>%
+  select(Var2, value) %>%
+  rename(Feature = Var2, 
+         Correlation = value) -> cor_plot_data
+
+cor_plot_data %>% 
+  mutate(`Feature Category` = "FIX ME") %>%
+  mutate(`Feature Category` = case_when(
+    str_detect(string = Feature, pattern = "^[a-z]") ~ "FANTASTIC",
+    str_detect(string = Feature, pattern = "IDyOM") ~ "IDyOM",
+    str_detect(string = Feature, pattern = "Number of Notes") ~ "Number of Notes",
+    TRUE ~ "MeloSol",
+  )) -> cor_plot_data
+
+cor_plot_data %>%
+  ggplot(aes(x = reorder(Feature, Correlation), y = Correlation, color = `Feature Category`)) + 
+  geom_point() +
+  scale_y_continuous(limits = c(-1,1), breaks = seq(-1, 1, .1)) +
+  geom_hline(yintercept = .37, linetype = "longdash") +
+  geom_hline(yintercept = -.37, linetype = "longdash") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Feature Correlation with Mean Accuracy",
+       subtitle = "Results include 3, 5, 7, and 9 Note Trials",
+       x = "Correlation Coeffecient",
+       y = "Feature", 
+       caption = "Dashed lines indicate p <.05 with N = 30") -> cor_plot_fig
+  
+
+cor_plot_fig
+
+ggsave(filename = "figures/cor_plot_fig_h2.png",plot = cor_plot_fig, width = 9, height = 5, units = "in")
+
+
+#--------------------------------------------
+# Feature Table Linear Models 
+
+# Fit LM predicting mean_score with each predictor
+# Create table with: standardized beta, CI, R2, p value, DF
+
+note_model <- lm(mean_score ~ trial_length, data = feature_table)
+idyom3_model <- lm(mean_score ~ `IDyOM IC cpint + cpintfref`, data = feature_table )
+
+summary(note_model)
+
+anova(note_model, idyom3_model)
+
+
+feature_table %>%
+  select_if(is.numeric) %>%
+  select(-mean_score) %>%
+  select(!starts_with("d")) %>%
+  map(~lm(feature_table$mean_score ~ .x, data = feature_table)) %>%
+  map(summary) %>%
+  map_dbl("r.squared") %>%
+  tidy() %>%
+  rename(R2 = x) -> r2feature_table
+
+feature_table %>%
+  select_if(is.numeric) %>%
+  select(-mean_score) %>%
+  select(!starts_with("d")) %>%
+  map(~lm(feature_table$mean_score ~ .x, data = feature_table)) %>%
+  map(summary) %>%
+  map_df(glance) %>%
+  print(n = 100) -> glance_table
+
+univariate_table <- cbind(r2feature_table, glance_table)
+
+univariate_table
+
+univariate_table %>%
+  select(-r.squared) %>%
+  mutate(across(is.numeric, round, 3)) %>%
+  htmlTable::htmlTable()
+  
+```
+
+Create Cowplots 
+
+```{r}
+#======================================================================================================
+# Make Univariate Feature Cow-Plot
+#--------------------------------------------------
+
+
+# Length Plot
+feature_table %>%
+  ggplot(aes(x = len, y = mean_score)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Number of Notes", y = "Average Percentage Correct",
+       title = "Number of Notes\n") +
+  scale_y_continuous(labels = percent) -> len_plot 
+  
+# FANTASTIC
+
+feature_table %>%
+  ggplot(aes(x = step.cont.loc.var, y = mean_score)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Stepwise Countour Local Variation", 
+       y = "Average Percentage Correct",
+       title = "FANTASTIC\nStepwise Contour Local Variation") +
+  scale_y_continuous(labels = percent) -> sclv_plot 
+
+sclv_plot  
+
+feature_table %>%
+  ggplot(aes(x = mean.entropy, y = mean_score)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Mean Entropy", y = "Average Percentage Correct",
+       title = "FANTASTIC\nMean Entropy") +
+  scale_y_continuous(labels = percent) -> mean_entropy_plot 
+
+mean_entropy_plot  
+
+feature_table %>%
+  ggplot(aes(x = tonalness, y = mean_score)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Tonalness", y = "Average Percentage Correct",
+       title = "FANTASTIC\nTonalness") +
+  scale_y_continuous(labels = percent) -> tonalness_plot 
+
+tonalness_plot  
+
+
+#-----------------------------------
+# IDyOM Plots 
+
+feature_table %>%
+  ggplot(aes(x = `IDyOM IC cpint`, y = mean_score )) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Average Information Content", 
+       y = "Average Percentage Correct",
+       title = "IDyOM\nChromatic Interval Viewpoint") +
+  scale_y_continuous(labels = percent) -> idyom_cpint
+
+idyom_cpint
+
+feature_table %>%
+  ggplot(aes(x = `IDyOM IC cpintfref`, y = mean_score)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Average Information Content", 
+       y = "Average Percentage Correct",
+       title = "IDyOM\nChromatic Pitch Interval Viewpoint") +
+  scale_y_continuous(labels = percent) -> idyom_cpintfref 
+
+idyom_cpintfref
+
+feature_table %>%
+  ggplot(aes(x = `IDyOM IC cpint + cpintfref`, y = mean_score)) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Average Information Content", y = "Average Percentage Correct",
+       title = "IDyOM\nCombined Viewpoints") +
+  scale_y_continuous(labels = percent) -> idyom_combined_viewpoints 
+
+idyom_combined_viewpoints
+#-------------------------------------------------------------------------
+# MeloSol
+
+feature_table %>%
+  ggplot(aes(x = log(Count), y = mean_score )) +
+  geom_point() +
+  theme_minimal() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Count in MeloSol Corpus", 
+       y = "Average Percentage Correct",
+       title = "Frequency Count\nMeloSol Corpus (Log Scale)") +
+  scale_y_continuous(labels = percent) -> melosol_freq_count_acc
+
+melosol_freq_count_acc
+
+#----------------------------------------------------------------------------
+# Number of Notes
+len_plot
+
+sclv_plot
+mean_entropy_plot
+tonalness_plot  
+
+idyom_cpint
+idyom_cpintfref
+idyom_combined_viewpoints
+
+melosol_freq_count_acc
+#--------------------------------------------------
+
+cowplot::plot_grid(
+  len_plot,
+  sclv_plot,
+  mean_entropy_plot,
+  tonalness_plot  ,
+  idyom_cpint,
+  idyom_cpintfref,
+  idyom_combined_viewpoints,
+  melosol_freq_count_acc, ncol = 4, nrow = 2
+) -> cow2
+
+cow2
+
+ggsave(filename = "figures/cowplot.png",plot = cow2, height = 20, width = 40, units = "cm")
+
+```
+
+
+## H3
+
+Linear Mixed Effects Model 
+
+
+
+```{r}
+# Calculate Score Per Trial Per Participant
+multi_tone_response_table %>%
+  group_by(subject, stimulus) %>%
+  mutate(scored_trial = mean(score)) %>%
+  select(subject, stimulus, scored_trial, trial_length) %>%
+  ungroup(subject, stimulus) %>%
+  distinct() -> per_trial_per_participant
+
+# Only Multi Conditions
+per_trial_per_participant %>%
+  filter(trial_length >= 3) %>%
+  left_join(feature_table) -> response_feature_table
+
+response_feature_table 
+
+library(lme4)
+
+model_number_of_notes <- lmer(scored_trial ~ len + (1+ len | subject), data = response_feature_table)
+
+summary(model_number_of_notes)
+
+
+model_idyom_3 <- lmer(scored_trial ~  `IDyOM IC cpint + cpintfref`+ (1+ `IDyOM IC cpint + cpintfref` | subject), data = response_feature_table)
+
+summary(model_idyom_3)
+
+anova(model_number_of_notes, model_idyom_3)
+
+MuMIn::r.squaredGLMM(model_number_of_notes)
+MuMIn::r.squaredGLMM(model_idyom_3)
+
+sjPlot::tab_model(model_number_of_notes, model_idyom_3)
+
+```
+
+Discussion Calculations
+
+```{r}
+summary(note_model)
+.92658/.03209
+
+summary(model_idyom_3)
+1.024016/0.189
+
+single_tone_condition_table %>%
+  summarise(mean = mean(score))
+
+
+```
+
+
+
+```{r}
+
+View(demographic_data)
+
+multi_tone_response_table %>%
+  group_by(subject, trial_length) %>%
+  summarise(mean_rt = mean(rt)) %>%
+  ggplot(aes(x = trial_length, y = mean_rt)) +
+  geom_point() +
+  facet_wrap(~subject)
+  
+
 # Scratch 
 # Only Complete Trials 
 multi_tone_response_table %>%
@@ -468,9 +804,6 @@ multi_tone_response_table %>%
   facet_wrap(~trial_length)
 
   
-
-
-
 # how many complete trials do i have
 # Does that change over n increase 
 
@@ -501,8 +834,6 @@ multi_tone_response_table %>%
   geom_smooth()
 
 ```
-
-
 
 
 
