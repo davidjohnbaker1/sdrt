@@ -1,0 +1,7 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+\centering
+\includegraphics{../figures/mean_rt_corpus.png}
+\caption{\label{fig:corpus-accuracy}(ref:corpus-accuracy)}
+\end{figure*}

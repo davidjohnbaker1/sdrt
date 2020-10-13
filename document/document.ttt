@@ -1,0 +1,15 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[]
+\begin{tabular}{lllllll}
+                             & Accuracy    &               &                  & Accuracy     &               &                  \\
+Predictors                   & Estimates   & CI            & p                & Estimates    & CI            & p                \\
+Intercept                    & 0.95        & 0.87 – 1.03   & \textless{}0.001 & 1.02         & 0.95 – 1.10   & \textless{}0.001 \\
+Number Of Notes              & -0.04       & -0.04 – -0.03 & \textless{}0.001 &              &               &                  \\
+                             &             &               &                  &              &               &                  \\
+IDyOM IC cpint + cpintfref   &             &               &                  & -0.02        & -0.02 – -0.02 & \textless{}0.001 \\
+N                            & 39 subjects &               &                  & 39 subjects  &               &                  \\
+Observations                 & 1092        &               &                  & 1092         &               &                  \\
+Marginal R2 / Conditional R2 & .05 / .36   &               &                  & 0.129 / 0.49 &               &
+\end{tabular}
+\end{table*}

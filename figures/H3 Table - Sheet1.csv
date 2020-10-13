@@ -1,0 +1,9 @@
+,Accuracy,,Accuracy,
+Predictors,Estimates,CI,Estimates,CI
+Intercept,0.95,0.87 – 1.03,1.02,0.95 – 1.10
+Number Of Notes,-0.04,-0.04 – -0.03,,
+,,,,
+IDyOM IC cpint + cpintfref,,,-0.02,-0.02 – -0.02
+N,39 subjects,,39 subjects,
+Observations,1092,,1092,
+Marginal R2 / Conditional R2,.05 / .36,,.13 / .49,
