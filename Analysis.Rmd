@@ -9,7 +9,7 @@ editor_options:
 
 This markdown documents the analyses used in the paper "Frequently Occuring Melodic Patterns are Easier to Recall".
 
-Analyses here reflect comments after presenting this work at SMPC 2019, COGMIR 19, and at Marcus Pearce's Lab Meeting in Fall of 2019.
+Analyses here reflect comments after presenting this work at SMPC 2019, COGMIR 19, and at Marcus Pearce's Lab Meeting in Fall of 2019, and at the Ohio State University's Lab.
 
 The text below is used in the Methods, Modeling and Results section of the manuscript.
 
@@ -69,6 +69,24 @@ d_table$age %>% range()
 d_table %>%
   group_by(gender) %>%
   tally()
+
+```
+
+Code for slides
+
+```{r}
+
+d_table %>%
+  filter(gender %in% c("MALE", "FEMALE")) %>%
+  ggplot(aes(x = age, fill = gender)) +
+  geom_density(alpha = .5) +
+  scale_fill_viridis(discrete = TRUE) +
+#  guides(fill=FALSE) + 
+  labs(title = "Age and Gender Distribution in Sample",
+       x = "Age",
+       y =  "Density",
+       fill = "Gender") +
+  theme_minimal()
 
 ```
 
@@ -257,15 +275,13 @@ cor.test(h1_table$z_mean_score, h1_table$z_ms_total, method = "spearman", altern
 cor.test(h1_table$z_mean_score, h1_table$z_ms_start, method = "spearman", alternative = "greater")
 cor.test(h1_table$z_mean_score, h1_table$z_essen, method = "spearman", alternative = "greater")
 
+cor.test(h1_table$z_mean_score, h1_table$z_mean_rt, method = "spearman", alternative = "less")
+
 # Corpus Correlations (Check MANUSCRIPT)
 cor.test(h1_table$z_ms_total, h1_table$z_essen, method = "spearman", alternative = "greater")
 cor.test(h1_table$z_ms_start, h1_table$z_essen, method = "spearman", alternative = "greater")
 cor.test(h1_table$z_ms_start, h1_table$z_ms_total, method = "spearman", alternative = "greater")
 
-colors_h1 <- c("z_ms_total" = "green", 
-            "z_ms_start" = "blue", 
-            "z_essen" = "red",
-            "z_mean_score" = "black")
 
 h1_table %>%
   filter(!is.na(degree_f)) %>%
@@ -274,26 +290,25 @@ h1_table %>%
   geom_line(aes(y = z_ms_total,  color = "z_ms_total"),  group = 1) +
   geom_point(aes(y = z_ms_start, color = "z_ms_start"),  group = 2) +
   geom_line(aes(y = z_ms_start,  color = "z_ms_start"),  group = 2) +
-  geom_point(aes(y = z_essen,  color = "z_essen"),    group = 3) + 
+  geom_point(aes(y = z_essen,  color = "z_essen"),    group = 3) +
   geom_line(aes(y = z_essen,  color = "z_essen"),     group = 3) +
-  geom_point(aes(y = z_mean_score, color = "z_mean_score"),group = 4) + 
+  geom_point(aes(y = z_mean_score, color = "z_mean_score"),group = 4) +
   geom_line(aes(y = z_mean_score, color = "z_mean_score"), group = 4) +
   theme_minimal() +
   labs(title = "Normalized Scale Degree Frequency and Mean Accuracy",
-       subtitle = "CHECK LABELS",
        x = "Scale Degree",
        y = "z score",
        color = "Legend") +
-      scale_color_manual(values = colors_h1,
-                         labels = c("All Notes in MeloSol",
-                                    "Starting Notes in MeloSol",
+  scale_color_viridis(discrete = TRUE, labels = c(
+                                    "Mean Accuracy of Experiment",
                                     "All Notes in Essen",
-                                    "Mean Accuracy of Experiment")) -> mean_rt_corpus_figure
+                                  "Starting Notes in MeloSol",
+                                    "All Notes in MeloSol") ) -> mean_rt_corpus_figure
 
 mean_rt_corpus_figure
 
-# ggsave(filename = "figures/mean_rt_corpus.png", 
-#        mean_rt_corpus_figure, 
+# ggsave(filename = "figures/mean_rt_corpus.png",
+#        mean_rt_corpus_figure,
 #        width = 9, height = 4, units = "in")
 
 #--------------------------------
@@ -313,7 +328,6 @@ h1_table %>%
   geom_line(aes(y = z_mean_rt_inv, color = "z_mean_rt_inv"), group = 2) +
   theme_minimal() +
   labs(title = "Normalized Mean Accuracy and Inverted Reaction Time",
-       subtitle = "Spearman's RHO (XX) = .861",
        x = "Scale Degree",
        y = "z score",
        color = "Legend") +
@@ -321,11 +335,13 @@ h1_table %>%
                          labels = c("Mean Accuracy All Trials",
                                     "Inverted RT of Correct Trials")) -> mean_rt_corpus_figure_behavioral
 
+
 mean_rt_corpus_figure_behavioral
+
 # 
-# ggsave(filename = "figures/mean_rt_corpus_behavioral.png", 
-#        mean_rt_corpus_figure_behavioral, 
-#        width = 9, height = 4, units = "in")
+# ggsave(filename = "figures/mean_rt_corpus_behavioral.png",
+# mean_rt_corpus_figure_behavioral, width = 9, height = 4, units = "in")
+
 ```
 
 ### Hypothesis II 
