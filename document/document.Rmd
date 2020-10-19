@@ -11,14 +11,14 @@ affiliation:
   - id            : "1"
     institution   : "Department of Computing, Goldsmiths, University of London"
 authornote: |
-  Experimental design and data collection took place during the author's time while a Ph.D. candiate at Louisiana State University.
+  Experimental design and data collection took place during the author's time as a Ph.D. candiate at Louisiana State University.
 abstract: |
   Melodic memory continues to present a paradox. Listeners excel at recognizing melodies once encoded in long term memory, but often struggle during encoding. In order to investigate this paradox, researchers often employ recognition, rather than recall paradigms. While easier to implement, recognition paradigms are limited in that they ultimately test a comparison of the contents of memory, rather than probe for explicit encoding. In this paper, we employ a recall design in order to investigate melodic encoding. 
-  Here we report results from a forward serial recall within-subjects melodic memory experiment (n = 39) using an expert population of musicians trained in moveable-do solfege in order to model melodic memory using music theoretic response categories. Compatible with theoretical frameworks predicting a processing facilitation advantage, more frequently occurring musical patterns are remembered more quickly and more accurately than less frequently occuring patterns. 
-  The evidence presented here is consistent with evidence suggesting that latent understanding of musical schemas can be modeled with musical corpora. Further, computationally derived measures related to information processing from both the Information Dynamic of Music and FANTASTIC toolbox outperform models of melodic memory that only account for the length of the melody measured in number of notes. Results from this experiment demonstrate how expert populations can provide valuable insights into melodic memory and tonal cognition. The framework provided here also provides an empirical basis linking literature investigating melodic anticipation with melodic memory.
+  Here we report results from a forward, serial recall within-subjects melodic memory experiment (n = 39) using an expert population of musicians trained in moveable-do solfege in order to model melodic memory using music theoretic response categories. Compatible with theoretical frameworks predicting a processing facilitation advantage, more frequently occurring musical patterns are remembered more quickly and more accurately than less frequently occuring patterns. 
+  The evidence presented here is consistent with evidence suggesting that latent understanding of musical schemas can be modeled with musical corpora. Further, computationally derived measures related to information processing from both the Information Dynamic of Music and FANTASTIC toolbox outperform models of melodic memory that only account for the length of the melody measured in number of notes. Results from this experiment demonstrate how expert populations can provide valuable insight into melodic memory and tonal cognition. The framework provided here also provides an empirical basis linking literature investigating melodic anticipation with melodic memory.
   
 keywords          : "recall memory, statistical learning, reaction time, tonal music, corpus study"
-wordcount         : "~8,497"
+wordcount         : "~8,408"
 bibliography      : ["r-references.bib", "literature-references.bib"]
 floatsintext      : yes
 figurelist        : no
@@ -45,28 +45,28 @@ r_refs("r-references.bib")
 Memory for music continues to present a paradox. 
 As noted by @Halpern2010-cz, listeners are very good at recognizing melodies once encoded in long term memory, but are very poor at encoding melodies. 
 Understanding exactly why this paradox exists becomes even more difficult because literature on memory for melodies tends to skew towards research that examines behavioral responses to entire melodies once they are encoded, as opposed to capturing the encoding process while melodies are being learned. 
-Although thoroughly understanding both sides of this paradox is necessary to arrive at a comprehensive understanding of musical memory, a void in our collective understanding of melodic memory exists examining how small scale musical structures are learned and what musical features contribute to that process. 
+Although thoroughly understanding both sides of this paradox is necessary to arrive at a comprehensive understanding of musical memory, a void in our collective understanding of melodic memory exists when examining how small scale musical structures are learned and what musical features contribute to that process. 
 This study presents novel research to address this problem. 
 
 ## Melodic Memory
 
 Listeners are generally very good at recognizing melodies; once encoded, listeners excel at melodic recognition. 
 Regardless of a melody’s features such as its key, tempo, and timbre, a listener is able to remember and recognize a melody after brief exposures ranging from minutes and days [@Schellenberg2015-jh] to extend across a lifetime [@Bartlett1980-fc; @Rubin1998-pp].
-Once a melody has been encoded, melodies do not behave like numbers or images in that they are resilient to any sort of memory interference effects, a finding that has been attributed to the multiple ways in which a listener might internally represent melodic information [@Herff2018-ts].  
+Once melodies have been encoded, they do not behave like numbers or images in that they are resilient to any sort of memory interference effects, a finding that has been attributed to the multiple ways in which a listener might internally represent melodic information [@Herff2018-ts].  
 Familiar melodies tend to be recognized quickly, as demonstrated by various note-by-note gating recognition paradigms with recognition typically established after hearing five to six notes [@Bailes2010-nh; @Bella2003-cy; @Daltrozzo2010-yn]. 
-Even faster recognition of more ecologically plausible music has been demonstrated using audio recordings with accurate response levels recorded at the millisecond level [@Krumhansl2010-ws]. 
+Even faster recognition of more ecologically plausible music has been demonstrated using audio data with accurate response levels recorded at the millisecond level [@Krumhansl2010-ws]. 
 
-Further, research incorporating the modeling of musical memory with computational tools suggests that listeners do not rely on any set of independent features, but rather take a “holistic” approach when accounting for factors that contribute to melody’s recognition [@Schulkind2003-je], with more recent work proposing that separate features of melodies contribute to distinct implicit and explicit learning processes [@Mullensiefen2014-ta]. 
+Further, research incorporating the modeling of musical memory with computational tools suggests that listeners do not rely on any set of independent features, but rather take a “holistic” approach when accounting for factors that contribute to a melody’s recognition [@Schulkind2003-je], with more recent work proposing that separate features of melodies contribute to distinct implicit and explicit learning processes [@Mullensiefen2014-ta]. 
 Work on earworms in popular music has also linked musical features such as global and local measures of contour, tempo, and tonality [@Mullensiefen2009-dx] relating to better memorability [@Jakubowski2017-pz]. 
-Taken together, modeling human memory using computational features suggests a clear rejection of any null hypothesis that would assume that all melodies are equally likely to be remembered, a position initially investigated by Ortmann in the early 20th century [@Ortmann1933-ty] and invites further investigation into this process.  
+Taken together, modeling human memory using computational features suggests a clear rejection of any null hypothesis that would assume that all melodies are equally likely to be remembered, a position initially investigated by Ortmann in the early 20th century [@Ortmann1933-ty] and invites further investigation into this process.
 Even individuals with reduced memory function from degenerative conditions such as Alzheimer’s disease demonstrate accurate levels of identifying differences in familiar and unfamiliar melodies [@Barlett1995-iw]. 
 Once we know a melody, we don’t tend to forget it. 
 
 In contrast to being very good at recognizing melodies, most people are not very good at learning melodies. 
-Compared to other mediums like memory for visual art [@Standing1973-ou] that reports a nearly unlimited memory for visual items, memory for musical material tends to be far worse with levels of recognition scoring just above chance [@Dowling2008-oz; @Halpern2008-vh; @Halpern2010-cz] in paradigms that require the recognition of melodies after short time frames. 
+Compared to other mediums like memory for visual art [@Standing1973-ou] that report nearly unlimited memory for visual items, memory for musical material tends to be far worse with levels of recognition scoring just above chance [@Dowling2008-oz; @Halpern2008-vh; @Halpern2010-cz] in paradigms that require the recognition of melodies after short time frames. 
 In contrast to many other phenomena in music perception that exhibit some sort of dose-response effect, discriminatory memory for melodies does not consistently increase with musical training [@Halpern2010-cz; @Korenman2004-zu; @McAuley2004-eq], with some exceptions  [@Harrison2017-us]. 
-Given most listener’s general poor ability to learn melodies, some psychometric music batteries such as the perceptual components from the Goldsmiths Musical Sophistication Index incorporate melodic discrimination paradigms without concern of any ceiling effects in performance [@Mullensiefen2014-kl]. 
-While the above studies have brought us closer as a community to understanding some of the paradox of musical memory--- with insights recently brought forward with various computational methods--- methodological limitations often are only able to capture the presumed encoding of an entire melody at the macro level, not the process in which smaller level musical structures are encoded and thus cannot lend insight into explaining melodic memory at the micro level. 
+Given most listeners' general poor ability to learn melodies, some psychometric music batteries such as the perceptual components from the Goldsmiths Musical Sophistication Index incorporate melodic discrimination paradigms without concern of any ceiling effects in performance [@Mullensiefen2014-kl]. 
+While the above studies have brought us closer as a community to understanding some of the paradox of musical memory--- with insights recently brought forward via various computational methods--- methodological limitations often are only able to capture the presumed encoding of an entire melody at the macro level, not the process in which smaller level musical structures are encoded and thus cannot lend insight into explaining melodic memory at the micro level. 
 
 ## Recognition and Recall 
 
@@ -79,22 +79,24 @@ Unlike remembering letters, numbers, or patterns like those used in some recall 
 Despite the difficulties in design, there has been some work investigating recall for tones. 
 For example, perception studies that have used recall paradigms with tones as stimuli often employ spatial metaphors that require participants to recall material at a more coarse level, such as indicating if tones were low, middle, or high [@Li2013-my; @Williamson2010-dw] or employ a precision-accuracy design [@Clark2018-mr].
 Though these studies implement recall designs, the use of non music-theoretic response categories consequently does not allow for any sort of meaningful music theoretic analysis. 
-
 Further, the goal of many of these studies is to use auditory stimuli to study individual differences, rather than favor a paradigm designed to understand structural properties of music that link the statistical properties of musical structure to aspects of musical perception [@Krumhansl2001-nq]. 
-Finally, experimental designs that allow for more inclusive sampling via using tasks that employ a forced decision cognitive model [@Harrison2017-us], utilizing music-specific tasks often fail to control for more domain-general mechanisms like working memory capacity [@Cowan2010-zc] that might better account for individual variation in performance and the phenomena the experiment was designed to investigate [@Berz1995-lu] with recent evidence corroborating this claim [@elliott2021].
 
-Some attempts to study musical recall have been able to avoid the above problems by relying on conducting experiments with individuals with formalized Western conservatory training by using a melodic dictation paradigm [@Karpinski2000-qz; @Ortmann1933-ty]. 
+Finally, recognition designs that allow for more inclusive sampling via using tasks that employ a forced decision cognitive model [@Harrison2017-us] tasks often fail to control for more domain-general mechanisms like working memory capacity [@Cowan2010-zc].
+Working memory capaciity might better account for individual variation in performance on tasks that require both the retention and active manipulation of musical material in memory [@Berz1995-lu].
+Recent evidence has corroborated this claim [@elliott2021].
+
+Some studies on musical recall have been able to avoid the above problems by relying on conducting experiments with individuals with formalized Western conservatory training by using a melodic dictation paradigm [@Karpinski2000-qz; @Ortmann1933-ty]. 
 Melodic dictation is the process in which an individual hears a melody, then without access to any sort of reference, must transcribe the melody in musical notation, often within a short time span. 
-While many melodic dictation studies are designed in a way in which it could be possible to better understand musical recall, studies involving melodic dictation tend to have more ecological end-goals in the context in musical education for understanding best practices in classroom settings [@Buonviri2014-ch; @Buonviri2015-qe; @Buonviri2017-gp]  or musical features responsible for differences at the individual level [@Pembrook1986-cg; @Taylor1983-uc].
+While many melodic dictation studies are designed in a way that would lead to better understanding of musical recall, studies involving melodic dictation tend to have more ecological end-goals in the context in of musical education for understanding best practices in classroom settings [@Buonviri2014-ch; @Buonviri2015-qe; @Buonviri2017-gp]  or musical features responsible for differences at the individual level [@Pembrook1986-cg; @Taylor1983-uc].
 
-Though while the end goals of much of the melodic dictation literature purport to be  different to the memory for melodies literature, the skill set required in order to carry out a melodic dictation could provide a valuable resource to help understand how melodies are encoded. 
+Though the end goals of much of the melodic dictation literature purport to be  different to the memory for melodies literature, the skill set required in to carry out a melodic dictation could provide a valuable resource to help understand how melodies are encoded. 
 As noted previously, one of the greatest methodological difficulties in investigating how melodies are encoded is that the general population lacks any sort of explicit language to collect responses in musical recall tasks. 
-In isolation, only individuals able to create meaningful response categories at the level of the individual note would be people with absolute pitch, the ability to identify and name musical tones [@Levitin2019-sb]. 
-That said, tonal musical listening does not happen in isolation; tonal music is often described as having a hierarchical structure, individuals often hear musical tones in relation to a global tonic [@Krumhansl2001-nq; @Lerdahl2004-xc; @Meyer1956-gc] and much of the earlier research on melodic memory takes listener’s ability to generalize melody through transposition as its stepping off point [@Dowling1978-ql]. 
+In isolation, the only individuals able to create meaningful response categories at the level of the individual note would be people with absolute pitch, the ability to identify and name musical tones [@Levitin2019-sb]. 
+That said, tonal musical listening does not happen in isolation; tonal music is often described as having a hierarchical structure, individuals often hear musical tones in relation to a global tonic [@Krumhansl2001-nq; @Lerdahl2004-xc; @Meyer1956-gc] and much of the earlier research on melodic memory takes listeners’ ability to generalize melody through transposition as its stepping off point [@Dowling1978-ql]. 
 
 Learning how to hear and identify these global relations is a fundamental skill taught to many students in North America as part of their ear training classes when pursuing a degree in music from schools accredited by the National Association of Schools of Music [@Nasm2019-fs]. 
-Via the use of learning relative pitch solfege and the use of solmization, listeners learn to hear pitches as related to a global tonic, thus linking their phenomenological experience with the tone that they are hearing to a larger tonal network of pitches [@Arthur2018-my] further allowing them to draw on their music theoretic knowledge to label tones with meaningful categories at the micro level [@Karpinski2000-qz]. 
-Given this technique of being able to hear and identify musical pitches, individuals with relative pitch afford the ability to capture data in musical recall experiments that is meaningful while simultaneously capturing the encoding process.
+Via the use of learning relative pitch solfege and the use of solmization, listeners learn to hear pitches as related to a global tonic, thus linking their phenomenological experience with the tone they are hearing to a larger tonal network of pitches [@Arthur2018-my], further allowing them to draw on their music theoretic knowledge to label tones with meaningful categories at the micro level [@Karpinski2000-qz]. 
+Given this technique of being able to hear and identify musical pitches, individuals with relative pitch afford the ability to capture data in musical recall experiments that are meaningful while simultaneously capturing the encoding process.
 This combination of skills could ultimately provide a novel way into investigating mental effort and other cognitive processes related to tonal cognition. 
 Collecting data from a serial recall task with musically meaningful items will result in a robust dataset that will allow investigation into short term musical encoding and the features associated with memory performance.
 
@@ -107,7 +109,7 @@ These researchers follow in the theoretical tradition of @Miller1956-np when the
 A musical recall task could more clearly establish this claim and how variability in performance on this task is related to both individual differences and musical features.  
 
 Secondly, using a serial recall task can serve as a medium to investigate the extent that computationally extracted features [@Jakubowski2017-pz; @Mullensiefen2009-dx; @Mullensiefen2014-ta; @Schulkind2003-je] are predictive of musical recall, as opposed to recognition, linking the structure of a melody to aspects of memory. 
-Being able to collect data at the level of note, rather than summarizing performance after hearing a melody, allows researchers to model other possible theoretical claims put forward by the music perception literature ranging from statistical learning [@Huron2006-ly; @Pearce2018-lb], to the effects of contour [@Bartlett1980-yv], tonalness [@Eerola2009-qj] on musical memory processing, and create models that explain performance on musical recall, as opposed to recognition, tasks. 
+Being able to collect data at the level of note, rather than summarizing performance after hearing a melody, allows researchers to model other possible theoretical claims put forward by the music perception literature ranging from statistical learning [@Huron2006-ly; @Pearce2018-lb], to the effects of contour [@Bartlett1980-yv], and tonalness [@Eerola2009-qj] on musical memory processing, and create models that explain performance on musical recall, as opposed to recognition, tasks. 
 For example, a serial recall dataset could be used to model where in a melody notes are most likely to be recalled correctly or incorrectly. 
 This could be used to further investigate claims of primacy and recency effects, as well as contour variation.  
 
@@ -131,9 +133,9 @@ There has already been work demonstrating that information content can serve as 
 ## Hypotheses 
 
 This paper presents a recall experiment using musically meaningful stimuli in a population of individuals trained in relative pitch to investigate musical memory. 
-By using individuals trained in a moveable-do system, we designed and implemented a musical recall paradigm where if an individual is established with a tonal center, individuals can recall single or multiple items akin to musical n-back tasks used in short term memory research [@Kane2007-pt]. 
+By using individuals trained in a moveable-do system, we designed and implemented a musical recall paradigm where, if an individual can establish a tonal center, individuals can recall single or multiple items akin to musical n-back tasks used in short term memory research [@Kane2007-pt]. 
 In order to investigate claims of statistical learning and establish ecological validity, stimuli for this experiment were specifically sampled from a corpus of n-grams from a novel corpus. 
-The _MeloSol_ [@Baker2020-pw], a 783 melody set of digitized melodies from the Fifth Edition of “A New Approach to Sight Singing” [@Berkowitz2011-hi], served as a population from which n-grams were pseudo-randomly selected from to represent varying levels of patterns to which a listener might be exposed. 
+The _MeloSol_ [@Baker2020-pw], a 783 melody set of digitized melodies from the Fifth Edition of “A New Approach to Sight Singing” [@Berkowitz2011-hi], served as a population from which n-grams were pseudo-randomly selected from in order to represent the latent understanding of the listener. 
 Here we explicitly assume that more frequently occurring patterns in the _MeloSol_ corpus can be used as a proxy to represent more frequent exposure to a musical pattern throughout a listener’s listening history. 
 Support for using the _MeloSol_ corpus, rather than the larger and more often used _Essen Folk Song Collection_ [@Schaffrath1995-ci] can be found in @Baker2020-pw.  
 
@@ -146,10 +148,11 @@ This includes unigram frequency distributions of scale degrees from all notes wi
 We model this claim using reaction time and accuracy from the serial recall experiment with responses to a single tone.
 
 In the multiple tone conditions, where participants recalled two or more tones, we adopted a regression modeling approach. 
-We first present an exploratory analysis to model the extent that univariate computational features are able to explain participant responses as our second hypothesis (H2). 
+We first present an exploratory analysis to model the extent that univariate computational features are able to explain participant responses). 
 We explore the number-of note-model [@Long1977-re; @Marple1977-pm; @Tallarico1974-mx], computational measures from the FANTASTIC toolbox relating to contour, tonality, and pitch and interval entropy [@Mullensiefen2009-dx], and various permutations of the Information Dynanmics of Music (IDyOM) model designed to capture mechanisms of statistical learning [@Pearce2005-hb; @Pearce2018-lb] that take advantage of a multiple-viewpoint framework [@Conklin1995-qk].
+This analysis constitutes our second hypothesis (H2).
 
-Finally, we then utilize a hierarchical regression framework to model behavioral responses in accuracy of responses using both individual and musical data.  
+Finally, we then utilize a hierarchical regression framework to model behavioral responses in accuracy of responses using both individual and musical data.
 Following the theoretical predictions put forward above, our third hypothesis (H3) would predict that measures associated with information content --reflecting a computational measures for processing fluency-- will outperform both rule based models based on the number of notes. 
 The experimental materials and data are openly available on the Open Science Framework (OSF) for replication, future modeling, or extensions of this line of research (https://osf.io/a462v/).
 
@@ -161,7 +164,7 @@ This experiment utilized a within-subjects design that required participants to 
 The independent variables collected were those taken from the demographic survey listed below in Materials as well as sets of computational measures derived from the computational models.
 Scripts to reproduce these analyses can be found in the supplemental materials. 
 
-Dependent variables measured were accuracy, which was scored at the item level as well as reaction time measured in milliseconds. 
+Dependent variables measured were accuracy, which was scored at the item level, as well as reaction time measured in milliseconds. 
 A small pilot experiment was run (N = 11) in order to establish the difficulty of the task and investigate for any main effects of key in the single tone condition. 
 
 ## Participants
@@ -173,7 +176,7 @@ Ethical approval for this experiment was approved by the Louisiana State Univers
 ## Procedure
 
 Participants accessed the experiment via a link to an internet browser. 
-The first page of the study asked participants to use a desktop computer, rather than a mobile device to complete the experiment and was only checked via a post-experiment questionnaire. 
+The first page of the study asked participants to use a desktop computer rather than a mobile device to complete the experiment and was only checked via a post-experiment questionnaire. 
 Before collecting data, participants consented to the study as approved by the Louisiana State University Internal Review Board and were told in this experiment they would be asked to “listen to small musical excerpts then respond based on what you hear” as well as provide demographic information when recruited. 
 
 The participants then answered six questions regarding their background: 
@@ -185,7 +188,7 @@ The participants then answered six questions regarding their background:
 * How many years have you taught aural skills at the post-secondary level? 
 
 All responses were given as free text response. 
-None of the demographic information is used in the analysis presented here, but was collected to serve for exploratory data analysis for future work.
+None of the demographic information is used in the analysis presented here, but was collected for exploratory data analysis as the basis for future work.
 Next, participants were instructed on the task they were to complete and read the following text: 
 
 > In this experiment you will complete the same task over many trials. In each section, you will hear a short cadence played on the piano followed by one or more musical tones. After hearing the tone or tones, you will be asked to respond which tone(s) you heard in moveable do notation as quickly and accurately as possible. There will be SIX blocks in this experiment, each corresponding to the number of tones you are asked to recall. This way, you will always know how many tones you need to respond with.
@@ -348,7 +351,7 @@ Using this experimental paradigm might more directly access top-down processes u
 Tethering this accuracy data with the frequency counts from the corpus data provides initial support for a processing facilitation hypothesis. 
 While the model here is relatively simplistic in that it just correlates accuracy with count data, exploring the relationship between accuracy and reaction time using more sophisticated computational models [@Wagenmakers2007-qf] might provide further insights into understanding the cognitive processes involved in this melodic recall task.
 
-The statistical analyses presented as a part of H1 showed a clear rection of any null linear model that would presume that notes would be recalled equally. 
+The statistical analyses presented as a part of H1 showed a clear rejection of any null linear model that would presume that notes would be recalled equally. 
 While intuitively obvious to any individuals who are able to complete this task or aural skills instructors, establishing this has theoretical implications for future models of musical memory in moving towards computational models that are able to estimate the limits of melodic memory. 
 Assuming that this pattern of behavioral response persists in sequences of notes rather than single note conditions, it matters not how many a listener can remember, but which notes. 
 This assertion is explored further in the next two analyses. 
@@ -363,21 +366,22 @@ Both measures of pitch entropy and contour variation -- also computationally der
 This finding is not particularly surprising given the importance of contour variation in more recent work [@Jakubowski2017-pz], initial work on musical memory [@Dowling1978-ql], and their relationship to entropy.
 
 In testing these predictions more robustly, in our third analyses we modeled all of the data relevant to musical recall, taking full advantage of a hierarchical linear mixed effects model in order to take into account individual differences in baseline performance. 
-In this last analysis, we found substantial support favoring a computational model based on auditory cognition over a number-of-notes model.  
-In terms of practical and pedagogical application this finding is not directly helpful for teachers trying to give their students rules of thumb when taking melodic dictation, but we feel this finding justifies further research in modeling musical memory limits. 
+In this last analysis, we found substantial support favoring a computational model based on auditory cognition over a number-of-notes model.
+In terms of practical and pedagogical application, this finding is not directly helpful for teachers trying to give their students rules of thumb when taking melodic dictation, but we feel this finding justifies further research in modeling musical memory limits. 
 
 ## Previous Work Connections
 
-Relating to previous work linking computational features to their predictive ability in recognition paradigms, in line with previous literature various measures of contour emerged as a reliable predictor in memory tasks. 
+Relating to previous work linking computational features to their predictive ability in recognition paradigms, and in line with previous literature various measures of contour emerged as a reliable predictor in memory tasks. 
 In work by Jakubowski and colleagues looking at features that were predictive of involuntary musical imagery (i.e. earworms), the authors reported effects of some of the features relating to contour, entropy, and tonalness  [@Jakubowski2017-pz]. 
-Similarly, there were not any clear links between features that loaded highly on the factor loadings predicting explicit memory reported in Mullensiefen and Halpern’s -@Mullensiefen2014-ta memory paradigm. 
-While there appears to be a small amount of overlap in the features shared between the models, the cognitive processes being examined here do not appear to be similar enough for a direct comparison and might explain the chasm in results. 
+Similarly, there were not any clear links between features that loaded highly on the factor predicting explicit memory reported in Mullensiefen and Halpern’s -@Mullensiefen2014-ta memory paradigm. 
+While there appears to be a small amount of overlap in the features shared between the models, the cognitive processes being examined here do not appear to be similar enough for a direct comparison and might explain the difference in results. 
 
-Going further into any analysis attempting to understand the predictive components of musical features becomes even more difficult when considering collinearity issues that arise when working with computationally extracted features As discussed by [@Taylor1983-uc], it is nearly impossible to investigate any symbolic feature of a melody in isolation due to the fac that changing one parameter will affect many others. 
+Attempts to analyze and understand the predictive components of musical features becomes even more difficult when considering collinearity issues that arise when working with computationally extracted features.
+As discussed by [@Taylor1983-uc], it is nearly impossible to investigate any symbolic feature of a melody in isolation due to the fact that changing one parameter will affect many others. 
 For example, it would be difficult to attempt to change an estimation of tonalness by adding in non-diatonic notes to a melody without altering the pitch or interval entropy calculations. 
-Some researchers have attempted to side-step this problem by using data reductive such as principal components analysis and distill features from the melodic data to a single complexity score [@Baker2017-nt; @Harrison2017-us], but given the degree of predictive ability from measures here related to information content, adding a data reductive model here might make things more difficult to interpret for future work.
+Some researchers have attempted to side-step this problem by using data reductive techniques such as principal component analysis in order to distill features from the melodic data to a single complexity score [@Baker2017-nt; @Harrison2017-us], but given the degree of predictive ability from measures here related to information content, adding a data reductive model here might make things more difficult to interpret for future work.
 
-Conducting these analyses highlights the need for both future work modeling melodic features to take a more careful look into the causal relationships between features, which would in turn address these issues of collinearity, and to possibly consider using experimental paradigms that use automatically generated melodies with a constrained set of musical parameters in order to more dynamically explore the feature space and its effect on behavioral as has been done in harmony perception [@harrison2020gibbs].
+Conducting these analyses highlights the need for future work modeling melodic features to take a more careful look into the causal relationships between features, which would in turn address issues of collinearity, and to possibly consider using experimental paradigms that use automatically generated melodies with a constrained set of musical parameters in order to more dynamically explore the stimuli space and its effect on behavior as has been done in harmony perception [@harrison2020gibbs].
 
 ## Limitations
 
@@ -386,7 +390,7 @@ The first consideration we discuss is exploring the extent that the chord prime 
 In exploring the pilot data, the initial presentation of chords happened twice as fast using quarter notes, rather than half notes establishing the major key before the memory prime. 
 Participants were able to do this task, but reported significant difficulty and fatigue effects. 
 
-Future work investigating the timings of these primes as well as their modality and voice leadings might provide valuable insights into the induction of a tonal space from which relative pitch recall judgements are carried out. 
+Future work investigating the timings of these primes, as well as their modality and voice leadings, might provide valuable insights into the induction of a tonal space from which relative pitch recall judgements are carried out. 
 A second modification that future work in this area might consider is moving beyond isochronous rhythms and a single tempo. 
 By varying these parameters, it would be easier to model and understand any relationships between musical time and cognitive constraints of memory capacity. 
 
@@ -394,7 +398,7 @@ Importantly, future studies using this paradigm should also consider exploring t
 While the nature of this expert level task is very domain specific, previous work by Berz notes that due to similarity of tasks like these to working memory tasks, working memory might be confounding some aspects of our performance [@Berz1995-lu].
 
 Lastly, future versions of this recall task need to expand the sample beyond expert conservatory trained musicians and use individuals from the general population. 
-The paradigm presented here was designed in order to capture musical recall data online without access to audio and heavily depended on the expertise of the sample. 
+The paradigm presented here was designed to capture musical recall data online without access to audio and heavily depended on the expertise of the sample. 
 Presumably there are many non-expert individuals that are able to sing back musical tones and produce musically meaningful response categories, albeit implicitly [@pfordresher2007speed].
 
 ## Future Directions 
@@ -403,8 +407,8 @@ Summarizing our findings, we believe that one of the main conclusions from our a
 Statistical learning models outperform a number-of-note model and reflect more plausible cognitive phenomena. 
 Further, using this framework, as opposed to a number-of-notes model, offers several falsifiable predictions to be investigated in future work.
 
-First, since statistical learning models are based in cognitive, rather than rule based phenomena, suggesting this pattern of processing facilitation should be evident both cross culturally using other musical styles and additionally would suggest these patterns might additionally show developmental, learning trends. 
-Following some of the initial claims by [@Krumhansl2001-nq] predicting how representations of the tonal hierarchy using goodness of fit ratings change with age and training, it should then be possible to capture the increase in processing facilitation with exposure measured by age and exposure. 
+First, since statistical learning models are based on cognitive, rather than rule based phenomena, suggesting this pattern of processing facilitation should be evident both cross culturally using other musical styles and additionally would suggest these patterns might show developmental, learning trends. 
+Following some of the initial claims by [@Krumhansl2001-nq] predicting how representations of the tonal hierarchy using goodness of fit ratings change with age and training, it should then be possible to capture the increase in processing facilitation measured by age and exposure. 
 We would predict that accuracy would increase as a function of age during development and exposure to different musical genres as has been demonstrated by Vuvan and Huges [@Vuvan_undated-zi]. 
 While it would be difficult to implement this exact paradigm in a developmental context, further work might consider tracking the by-semester growth trajectory of individuals throughout their development of relative pitch in aural skills in music schools or implementing musical recall tasks using a limited response space with non-verbal recall categories akin to the game Simon. 
 
@@ -413,16 +417,16 @@ For example, a combination of three notes that have high information content mig
 Creating a framework around this would create a more linear path to success as students continue to learn aural skills if implemented systematically.
 
 Thirdly, the paradigm presented here via the use of modeling provides a new avenue to create falsifiable models regarding the limits of musical memory. 
-As discussed throughout the paper, the unit of a note has served as a proxy to measure capacity limits of memory. It has been used in estimating the context of notes that can be remembered in melodic recall [@Marple1977-pm; @Schulkind2009-xz; @Tallarico1974-mx; @Taylor1983-uc] how many notes are required before a melody is recognized [@Bella2003-cy], and used pedagogically to estimate the size of a chunk as it pertains to estimating the number of hearings needed in the context of melodic dictation [@Karpinski2000-qz]. 
+As discussed throughout the paper, the unit of a note has served as a proxy to measure capacity limits of memory. It has been used in estimating the context of notes that can be remembered in melodic recall [@Marple1977-pm; @Schulkind2009-xz; @Tallarico1974-mx; @Taylor1983-uc], how many notes are required before a melody is recognized [@Bella2003-cy], and used pedagogically to estimate the size of a chunk as it pertains to estimating the number of hearings needed in the context of melodic dictation [@Karpinski2000-qz]. 
 While much easier to estimate, using a relatively simpler model in the context of estimating the limits of musical memory might be too simplistic to push forward theories of melodic memory beyond ballpark estimates.
 
-To give a concrete example, we take Marple’s estimation as noted in [@Karpinski2000-qz] of the limit of short term musical memory to follow in the tradition and be approximately 5 - 9 notes inclusive. 
+To give a concrete example, we take Marple’s estimation noted in [@Karpinski2000-qz] regarding the limit of short term musical memory where he estimates this to be approximately 5 - 9 notes inclusive. 
 Borrowing from a theoretical path model put forward by @Guest2020-jx working within the framework of musical memory, the theoretical prediction of Marple’s model of the limit of musical memory would be between 5 to 9 notes. 
 Unfortunately, this verbal theory is quite loose in its specification, leaving many assumptions left unanswered: 
 Does this range have a deterministic property which ensures that any listener with any notes is ensured to remember a set of notes if it falls within this range? 
 Are there stochastic elements associated with this range, meaning that people are more likely to remember a mean 7 with a standard deviation of 2 notes?
 How does tempo and rhythm figure into this estimation? 
-Without specifying a verbal theory, there are actually many theories that can become of it [@Farrell2018-qn]. 
+Without specifying a verbal theory, there are actually many theories that can come of it [@Farrell2018-qn]. 
 This is without question, too harsh of a critique for a model initially intended to be a general approximation, but the problems associated with it highlight problems when theorizing without any sort of specification or implementations [@Guest2020-jx].
 
 The discussion above demonstrates why it is difficult to explicitly formalize Marple’s 5 - 9 estimation into a falsifiable hypothesis that can ultimately be tested with data due to its lack of general specification. 
@@ -431,28 +435,27 @@ Since trials in this experiment fell completely within the bounds of Marple’s 
 Unfortunately, beyond estimating that people will remember a few notes, minimal other satisfactory conclusions can be reached in terms of better estimating the limits of musical memory. 
 
 Turning this critical lens onto the analyses from the results presented in this paper, we can attempt to rectify this problem of estimating the capacity limits of memory by looking at the regression models estimated from the data in this experiment as a case study in modeling. 
-Taking the H2 analysis into account that predicted mean performance as a function of the number of notes in the model, the model estimated the parameters to be $Y = -0.03209x + .92658$. 
+Taking the H2 analysis into account that predicted mean performance as a function of the number of notes in the model, the model estimated the parameters to be $Y = -0.03x + .93$. 
 This would predict a baseline rate of memory of approximately 89% with one note when solving for Y, with this decreasing linearly 3% with each additional note. Solving for X when Y is 0 would predict chance performance in a 28 note condition, but overall the  model only predicts 14% (Adjusted R2) of the variance.
 
-While the initial estimate of 89% accuracy is close, but not exactly near the mean 71.9% accuracy of the analyses in the single note condition, these models are somewhat incomparable since the single note condition equally tests any starting scale degree including non-diatonic tones, while notes from the multi-tone condition both have other processes at play such as having to remember other notes and additionally has a different distribution of starting scale degrees within the stimuli set. 
+While the initial estimate of 89% accuracy is close, but not exactly near the mean 71.9% accuracy of the analyses in the single note condition, these models are somewhat incomparable since the single note condition equally tests any starting scale degree including non-diatonic tones, while notes from the multi-tone condition have other processes at play such as having to remember other notes and a different distribution of starting scale degrees within the stimuli set. 
 Regardless, even this new linear model using number-of-notes presented here is an improvement on Marple’s rule of thumb in terms of positing falsifiable insights into the limits of melodic memory. 
 
 These estimations are only improved when using a hierarchical model that incorporates a computational model of statistical learning. 
-This fixed effects of this model $Y = -0.02 + 1.02$ estimate a linear reduction in accuracy of -0.02 with every unit of information as calculated using the set parameters from the IDyOM model, with a baseline estimate approximated to with an intercept of 1.02, thus suggesting 100% recall with near 0 information content present and chance performance at when the average information content of the n-gram is equal to  5,100.
-The extreme estimates at the extreme bounds of the model may not have practical appication, but provide a much more specific degree of falsifiablity to be used as the basis when investigated in future work. 
+The fixed effects of this model $Y = -0.02 + 1.02$ estimate a linear reduction in accuracy of -0.02 with every unit of information as calculated using the set parameters from the IDyOM model, with a baseline estimate approximated with an intercept of 1.02, suggesting 100% recall with near 0 information content present and chance performance when the average information content of the n-gram is equal to  5,100.
+The estimates at the extreme bounds of the model may not have practical appication, but provide a much more specific degree of falsifiablity to be used as the basis when investigated in future work. 
 
-While much more complex, having to estimate these parameters using both fixed and random effects, a computational model trained using two viewpoints on this specific corpus, the not model is not only more cognitively plausible, but also improves the model fit to a conditional and marginal $R^2$ of 12% and 49% respectively. 
+While much more complex, having to estimate these parameters using both fixed and random effects, a computational model trained using two viewpoints on this specific corpus, the model is not only more cognitively plausible, but also improves the model fit to a conditional and marginal $R^2$ of 12% and 49% respectively. 
+The two models presented here, for example, could almost be a case study in the bias variance tradeoff [@James2013-zf]  and serve as an illustration of what meaningful insights can be understood when working within a computational framework as argued by Guest and Martin -@Guest2020-jx. 
 
-The two models presented here for example could almost be a case study in the bias variance tradeoff [@James2013-zf]  and serve as an illustration of what meaningful insights can be understood when working within a computational framework as argued by Guest and Martin -@Guest2020-jx. 
-
-Adopting this specific model fitting approach which explicitly instantiates theories within the frameworks we are interested in, research in musical memory might be able to position itself within a more directed program of research [@Kuhn2012-bx]. 
+Adopting this specific model fitting approach, which explicitly instantiates theories within the frameworks we are interested in, research in musical memory might be able to position itself within a more directed program of research [@Kuhn2012-bx]. 
 While it is beyond the scope of this paper to now introduce a formal theory here, the findings from this paper provide a plausible and falsifiable theoretical framework for future work in memory for melodies.  
-Ideally the melodic memory literature can move beyond the number-of-notes models and take full advantage of this link to a statistical learning induced processing facilitation theory, allowing it to link with the expectation literature, in order to continue to investigate the paradox of memory for melodies.
+Ideally, the melodic memory literature can move beyond the number-of-notes models and take full advantage of this link to a statistical learning induced processing facilitation theory, allowing it to link with the expectation literature, in order to continue to investigate the paradox of memory for melodies.
 
 # Conclusions
 
-In this paper we explored how a novel musical recall experiment can help explore claims of how statistical learning might explain hypotheses of processing fluency. 
-Through both an analysis of single and multiple tone conditions we demonstrated a relationship between how the frequency of occurrence of musical patterns in a corpus are related to accuracy judgments in a musical recall task within a specialist population of Western musicians trained in relative pitch aural skills. 
+In this paper, we explored how a novel musical recall experiment can help explore claims of how statistical learning might explain hypotheses of processing fluency. 
+Through both an analysis of single and multiple tone conditions, we demonstrated a relationship between how the frequency of occurrence of musical patterns in a corpus are related to accuracy judgments in a musical recall task within a specialist population of Western musicians trained in relative pitch aural skills. 
 We show how using information content and measures of compressibility can be a fruitful way forward in modeling musical memory and suggest further avenues for exploring this. 
 All materials and data for this experiment have been made available as part of the Open Science Framework (https://osf.io/a462v/). 
 
