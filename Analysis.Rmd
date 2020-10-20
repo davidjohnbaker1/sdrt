@@ -282,6 +282,17 @@ cor.test(h1_table$z_ms_total, h1_table$z_essen, method = "spearman", alternative
 cor.test(h1_table$z_ms_start, h1_table$z_essen, method = "spearman", alternative = "greater")
 cor.test(h1_table$z_ms_start, h1_table$z_ms_total, method = "spearman", alternative = "greater")
 
+h1_table %>%
+  filter(!is.na(degree_f)) %>%
+  ggplot(aes(x = degree_f, y = z_mean_score)) +
+  geom_point() +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "TEST") +
+  scale_color_viridis(discrete = TRUE ) -> test
+
+test
+
 
 h1_table %>%
   filter(!is.na(degree_f)) %>%
@@ -300,16 +311,16 @@ h1_table %>%
        y = "z score",
        color = "Legend") +
   scale_color_viridis(discrete = TRUE, labels = c(
-                                    "Mean Accuracy of Experiment",
                                     "All Notes in Essen",
+                                    "Mean Accuracy of Experiment",
                                   "Starting Notes in MeloSol",
                                     "All Notes in MeloSol") ) -> mean_rt_corpus_figure
 
 mean_rt_corpus_figure
 
-# ggsave(filename = "figures/mean_rt_corpus.png",
-#        mean_rt_corpus_figure,
-#        width = 9, height = 4, units = "in")
+ggsave(filename = "figures/mean_rt_corpus.png",
+       mean_rt_corpus_figure,
+       width = 9, height = 4, units = "in")
 
 #--------------------------------
 # Reaction Time and Accuracy 
