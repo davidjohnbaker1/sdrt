@@ -1,0 +1,44 @@
+---
+title: "Analysis 2"
+author: "David John Baker"
+date: "25/03/2021"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(viridis)
+library(purrr)
+library(broom)
+library(scales)
+library(tidyr)
+library(reshape2)
+
+
+# Demographic Data
+demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
+
+# Single Tone Condition
+single_tone_condition_table <- read_csv("data/aggregate_data/current_single_table.csv")
+
+# Multi Tone Conditions 
+multi_tone_response_table <- read_csv("data/aggregate_data/current_multi_table.csv")
+```
+
+
+Data File Reflects New Analysis
+
+Questions worth asking
+
+* Are frequently occuring patterns easier to recall?
+* What is the display of behavior across trials? (Facet Wrap)
+* Introduce absolute vs partial scoring 
+
+
+
+
+
+
