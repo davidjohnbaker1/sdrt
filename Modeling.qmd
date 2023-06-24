@@ -1,0 +1,828 @@
+---
+title: "Modeling"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+This notebook contains all fitted models for the paper [TITLE]().
+
+## Data Import 
+
+```{r}
+library(tidyverse)
+library(cmdstanr)
+library(rstan)
+library(ggridges)
+library(cowplot)
+
+# Demographic Data
+demographic_data <- read_csv("data/aggregate_data/current_demo_table.csv")
+
+# Single Tone Condition
+single_tone_condition_table <- read_csv("data/aggregate_data/current_single_table.csv")
+
+# Multi-Tone Conditions 
+multi_tone_response_table <- read_csv("data/aggregate_data/current_multi_table.csv")
+```
+
+## Single Data Preparation
+
+```{r}
+# Change Scale Degree to Factor
+single_tone_condition_table$scale_degree_f <- factor(single_tone_condition_table$scale_degree, levels = c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti"))
+
+# Scale Degree Into Index Variable
+single_tone_condition_table$scale_degree_i <- as.numeric(single_tone_condition_table$scale_degree_f)
+
+# Change Key to Factor
+single_tone_condition_table$key <- factor(single_tone_condition_table$key, levels = c("c","a" ,"e"))
+# Key into Index Variable (C, A, E)
+single_tone_condition_table$key_i <- as.numeric(single_tone_condition_table$key)
+
+# Prepare Data for 1st Stage of Models 
+data_m1.1 <- list(
+  n = nrow(single_tone_condition_table),
+  n_scale_degrees = length(unique(single_tone_condition_table$scale_degree)),
+  n_participants = length(unique(single_tone_condition_table$subject)),
+  n_keys = length(unique(single_tone_condition_table$key)),
+  scale_degrees = seq(1:12),
+  participants = seq(1:39),
+  keys = seq(1:3),
+  correct = single_tone_condition_table$score,
+  scale_degree = single_tone_condition_table$scale_degree_i,
+  participant = as.numeric(as.factor(single_tone_condition_table$subject)),
+  key = single_tone_condition_table$key_i
+)
+```
+
+### M1.1 Single Note Accuracy Model 
+
+* UPDATE IN TEXT
+
+We modeled accuracy in the single note using a multi-level model as a function of participant (N = 39), key (N = 3), and scale degree (N = 12). Posterior distributions for the resulting coefficients of the model are visualized in Figure M1.1, with each set of variables from the single model plotted on separate panels. The dependent variable of accuracy was modeled as a Binomial distribution, with the probability of a correct response described as a logit transformed linear combination of participant, key, and scale degree. 
+
+```{r}
+# JAB: TODO Warning https://mc-stan.org/docs/reference-manual/brackets-array-syntax.html
+model_1.1 <- cmdstan_model(stan_file = "stan/M1.1.multilevel.stan")
+
+model_1.1_fit <- model_1.1$sample(
+  data = data_m1.1, 
+  seed = 666, 
+  chains = 4, 
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+
+# TODO: Check 4% divergent transitions 
+model_1.1_fit_tib <- model_1.1_fit$summary()
+
+
+```
+
+#### Figure M1.1
+
+Create plot that visualizes all coefs.
+
+Three panels, one for:
+
+- Beta: top left
+- Gamma: bottom left
+- Alpha: Participant (long right)
+
+- Error Terms???
+
+```{r}
+#-------------------------------------------------------------------------------
+# Figure 1.1
+#-------------------------------------------------------------------------------
+# Scale Degrees
+
+model_1.1_beta <- model_1.1_fit$draws("beta", format = "df")
+
+right_beta_order <- c(
+  "beta[1]\n do",
+  "beta[2]\n ra",
+  "beta[3]\n re",
+  "beta[4]\n me",
+  "beta[5]\n mi",
+  "beta[6]\n fa",
+  "beta[7]\n fi",
+  "beta[8]\n sol",
+  "beta[9]\n le",
+  "beta[10]\n la",
+  "beta[11]\n te",
+  "beta[12]\n ti"
+  ) 
+
+
+# TODO: Make Text much bigger 
+# TODO: Consider color coding distributions for chromatic or not? 
+# TODO: Ensure color matches acrossm (purple viridis for SD)
+
+m1.1_betas_gg <- model_1.1_beta |>
+  pivot_longer(cols = (starts_with("beta")), names_to = "coef",values_to = "samples") |>
+  mutate(coef = case_when(
+    coef == "beta[1]" ~ "beta[1]\n do",
+    coef == "beta[2]" ~ "beta[2]\n ra",
+    coef == "beta[3]" ~ "beta[3]\n re",
+    coef == "beta[4]" ~ "beta[4]\n me",
+    coef == "beta[5]" ~ "beta[5]\n mi",
+    coef == "beta[6]" ~ "beta[6]\n fa",
+    coef == "beta[7]" ~ "beta[7]\n fi",
+    coef == "beta[8]" ~ "beta[8]\n sol",
+    coef == "beta[9]" ~ "beta[9]\n le",
+    coef == "beta[10]" ~ "beta[10]\n la",
+    coef == "beta[11]" ~ "beta[11]\n te",
+    coef == "beta[12]" ~ "beta[12]\n ti"
+  )) |>
+  mutate(coef = factor(coef, levels = right_beta_order)) |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = seq(-3,3,.5)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_viridis_d(option = "D") +
+  coord_flip() +
+  labs(title = "Scale Degree Parameters",
+        x = "Posterior Log Odds",
+        y = "Scale Degree")
+
+m1.1_betas_gg
+#ggsave()
+  
+#-------------------------------------------------------------------------------
+# Keys 
+
+model_1.1_gamma <- model_1.1_fit$draws("gamma", format = "df")
+
+right_gamma_order <- c(
+  "gamma[1]\n C",
+  "gamma[2]\n A",
+  "gamma[3]\n E"
+  ) 
+
+m1.1_gammas_gg <- model_1.1_gamma |>
+  pivot_longer(cols = (starts_with("gamma")), names_to = "coef",values_to = "samples") |>
+    mutate(coef = case_when(
+    coef == "gamma[1]" ~ "gamma[1]\n C",
+    coef == "gamma[2]" ~ "gamma[2]\n A",
+    coef == "gamma[3]" ~ "gamma[3]\n E"
+  )) |>
+  mutate(coef = factor(coef, levels = right_gamma_order)) |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = seq(-3,3,.5)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_viridis_d(option = "A") +
+  coord_flip() +
+  labs(title = "Key Parameters",
+        x = "Posterior Log Odds",
+        y = "Keys")
+
+m1.1_gammas_gg
+# Ggsave()
+
+#-------------------------------------------------------------------------------
+# Participants
+
+model_1.1_alpha <- model_1.1_fit$draws("alpha", format = "df")
+
+right_alpha_order <- c(
+  "alpha[1]",
+  "alpha[2]",
+  "alpha[3]",
+  "alpha[4]",
+  "alpha[5]",
+  "alpha[6]",
+  "alpha[7]",
+  "alpha[8]",
+  "alpha[9]",
+  "alpha[10]",
+  "alpha[11]",
+  "alpha[12]",
+  "alpha[13]",
+  "alpha[14]",
+  "alpha[15]",
+  "alpha[16]",
+  "alpha[17]",
+  "alpha[18]",
+  "alpha[19]",
+  "alpha[20]",
+  "alpha[21]",
+  "alpha[22]",
+  "alpha[23]",
+  "alpha[24]",
+  "alpha[25]",
+  "alpha[26]",
+  "alpha[27]",
+  "alpha[28]",
+  "alpha[29]",
+  "alpha[30]",
+  "alpha[31]",
+  "alpha[32]",
+  "alpha[33]",
+  "alpha[34]",
+  "alpha[35]",
+  "alpha[36]",
+  "alpha[37]",
+  "alpha[38]",
+  "alpha[39]"
+  ) 
+
+
+# TODO: Remove alpha labels, re-order median 
+# Maybe Change this to 'participant'
+m1.1_alphas_gg <- model_1.1_alpha |>
+  pivot_longer(cols = (starts_with("alpha")), names_to = "coef",values_to = "samples") |>
+  mutate(coef = factor(coef, levels = right_alpha_order)) |>
+  ggplot(aes(y = fct_reorder(coef, samples), x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  theme(legend.position = "none", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_viridis_d(option = "C" ) +
+  labs(title = "Participant Parameters",
+        x = "Posterior Log Odds",
+        y = "Individuals")
+
+
+#-------------------------------------------------------------------------------
+# Assemble Figure 1 
+#-------------------------------------------------------------------------------
+
+
+left_f1.1 <- plot_grid(m1.1_betas_gg, m1.1_gammas_gg, nrow = 2, rel_heights = c(2,1), labels = c("A","B"))
+right_f1.1 <- plot_grid(m1.1_alphas_gg, labels = "C")
+
+# TODO: Make a title 
+# TODO: Make text bigger 
+# TODO: All axis are the same, don't do individually 
+# TODO: Add R2, or deviance or something 
+# TODO: Add error parameters, but small 
+
+figure_1.1_notitle <- plot_grid(left_f1.1, right_f1.1, rel_widths = c(2,1))
+
+figure_1.1 <- add_title_to_cowplot(figure_1.1_notitle, title_string = "Correct ~ [Scale Degree] + [Key] + [1|Participant]")
+
+figure_1.1 
+
+ggsave(filename = "figures/bayes/figure1.1.png", width = 12, height = 8, dpi = "retina")
+
+#-------------------------------------------------------------------------------
+```
+
+* TODO: Improve Model fit by regressing corpus stats? 
+
+### M1.2 Single Note Reaction Time Model 
+
+#### EDA for RT 
+
+#### Figure M1.2 
+
+* TODO? 
+
+https://discourse.mc-stan.org/t/advice-on-distribution-for-modelling-reaction-times-and-setting-priors/19385
+
+### S1.1 Guessing Simulation 
+
+* TODO? 
+
+### M2.1 Multi-Note Accuracy Model 
+
+> TODO: re-word, but now modeled at the note! 
+
+> TODO: Consider Single Tone here too? 
+
+We modeled accuracy in the multi-note using a multi-level Bayesian mixed-effects model as a function of participant (N = 39) and block (N = XX). Block was index coded so each of the  2, 3, 5,7, and 9 conditions was estimated separately. Posterior distributions for the resulting coefficients of the model are visualized in Figure M2.1, with each set of variables from the single model plotted on separate panels. The dependent variable of accuracy was modeled as a normal distribution, with the accuracy score being computed by calculating the number of correct responses divided by the total number of notes in the trial. No partial credit was accounted for in the model. For example, if the correct answer in a trial was Do-Re-Mi, but the participant responded Do-Mi-Re, this would only be 33% correct. Accuracy was described as a linear combination of participant and block.
+
+```{r}
+multi_tone_response_table
+
+multi_tone_response_table$scale_degree_f <- factor(multi_tone_response_table$trial_answer, levels = c("do","ra","re","me","mi","fa","fi","sol","le","la","te","ti"))
+
+multi_tone_response_table$scale_degree_i <- as.numeric(multi_tone_response_table$scale_degree_f)
+
+# Check why 10 occurs here 
+multi_tone_response_table <- multi_tone_response_table |>
+  filter(stimulus != "v5_v4_v3_v2_v1")
+
+model_2.1 <- cmdstan_model(stan_file = "stan/M2.1.multilevel.stan")
+
+data_m2 <- list(
+  n = nrow(multi_tone_response_table),
+  n_scale_degrees = length(unique(multi_tone_response_table$trial_answer)),
+  n_participants = length(unique(multi_tone_response_table$subject)),
+  n_lengths = length(unique(multi_tone_response_table$trial_length)),
+  n_serials = length(unique(multi_tone_response_table$serial_order)),
+  n_melodies = length(unique(multi_tone_response_table$stimulus)),
+  scale_degrees = seq(1:12),
+  participants = seq(1:39),
+  lengths = seq(1:5),
+  serials = seq(1:9),
+  melodies = seq(1:39),
+  correct = multi_tone_response_table$score,
+  scale_degree = multi_tone_response_table$scale_degree_i,
+  participant = as.numeric(as.factor(multi_tone_response_table$subject)),
+  length = as.numeric(as.factor(multi_tone_response_table$trial_length)),
+  serial = as.numeric(as.factor(multi_tone_response_table$serial_order)),
+  melody = as.numeric(as.factor(multi_tone_response_table$stimulus))
+)
+
+data_m2
+
+model_2.1_fit <- model_2.1$sample(
+  data = data_m2, 
+  seed = 666, 
+  chains = 4, 
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+
+# TODO: Check 4% divergent transitions 
+model_2.1_fit_tib <- model_2.1_fit$summary()
+
+#model_2.1_fit_tib
+
+```
+
+#### Figure M2.1 
+
+```{r}
+model_2.1_alphas <- model_2.1_fit$draws("alpha", format = "df")
+
+# Maybe Change this to 'participant'
+m2.1_alpha_gg <- model_2.1_alphas |>
+  pivot_longer(cols = (starts_with("alpha")), names_to = "coef",values_to = "samples") |>
+
+  ggplot(aes(y = fct_reorder(coef, samples), x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_viridis_d() +
+  theme_classic() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  theme(legend.position = "none") +
+  scale_fill_viridis_d(option = "C" ) +
+  labs(title = "Participant Intercepts",
+       y = "Participants",
+       x = "Log Odds Estimates") 
+
+m2.1_alpha_gg
+#----------------
+#------------------------------------------------------------------------------
+# M 2.1 Scale Degrees
+#------------------------------------------------------------------------------
+
+# Coefs - SDs 
+model_2.1_beta <- model_2.1_fit$draws("beta", format = "df")
+
+# Maybe Change this to 'participant'
+m2.1_betas_gg <- model_2.1_beta |>
+  pivot_longer(cols = (starts_with("beta")), names_to = "coef",values_to = "samples") |>
+    mutate(coef = case_when(
+    coef == "beta[1]" ~ "beta[1]\n do",
+    coef == "beta[2]" ~ "beta[2]\n ra",
+    coef == "beta[3]" ~ "beta[3]\n re",
+    coef == "beta[4]" ~ "beta[4]\n me",
+    coef == "beta[5]" ~ "beta[5]\n mi",
+    coef == "beta[6]" ~ "beta[6]\n fa",
+    coef == "beta[7]" ~ "beta[7]\n fi",
+    coef == "beta[8]" ~ "beta[8]\n sol",
+    coef == "beta[9]" ~ "beta[9]\n le",
+    coef == "beta[10]" ~ "beta[10]\n la",
+    coef == "beta[11]" ~ "beta[11]\n te",
+    coef == "beta[12]" ~ "beta[12]\n ti"
+  )) |>
+  mutate(coef = factor(coef, levels = right_beta_order)) |>
+  mutate(coef = factor(coef, levels = right_beta_order)) |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  scale_fill_viridis_d() +
+  theme(legend.position = "none") +
+  labs(
+       y = "Scale Degrees",
+       x = "Log Odds Estimates")
+
+#------------------------------------------------------------------------------
+# Block Length 
+#------------------------------------------------------------------------------
+
+# Coefs - Block (Lengths)
+model_2.1_kappa <- model_2.1_fit$draws("kappa", format = "df")
+
+# TODO: Re-label X axis 
+
+# TODO: Clean up variance, stimulus as random effect? 
+
+# Maybe Change this to 'participant'
+m2.1_kappas_gg <- model_2.1_kappa |>
+  pivot_longer(cols = (starts_with("kappa")), names_to = "coef",values_to = "samples") |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  coord_flip()
+
+
+# Note HERE see clear effect of Scale degree 
+m2.1_betas_gg
+
+# And load here on the condition 
+m2.1_kappas_gg
+
+m2.1_alpha_gg
+
+left_f2.1 <- plot_grid(m2.1_betas_gg, m2.1_kappas_gg, ncol = 2, rel_heights = c(0.4,0.6))
+right_f2.1 <- plot_grid(m2.1_alpha_gg)
+
+figure2.1_no.title <- plot_grid(left_f2.1, right_f2.1,rel_widths = c(0.8, 0.2))
+
+figure_2.1 <- add_title_to_cowplot(figure2.1_no.title, "Model 2.1")
+
+figure_2.1
+
+```
+
+### M2.2 Multi Note Block and Recall Position Accuracy Model 
+
+* TODO: Should recall position be ORDERED category? 
+* TODO: algebra so mu is default intercept. 
+
+$$L_i \sim \text{Binomial}(1, p_i)$$
+$$\text{logit}(p_i) = \beta_{\text{Scale Degree[i]}} + \beta_{\text{Serial Position[i]}} + \beta_{\text{Length[i]}} +  \alpha_{\text{Participant[i]}} +  \alpha_{\text{Melody[i]}}$$
+$$\beta_{SD} \sim \text{Normal(} 0 , \sigma_{\beta [SD]}\text{)} \text{, for j = 1..12}$$
+$$\beta_{SP} \sim \text{Normal(} 0 , \sigma_{\beta [SP]}\text{)} \text{, for j = 1..9}$$
+$$\beta_{L} \sim \text{Normal(} 0 , \sigma_{\beta [L]}\text{)} \text{, for j = 1..5}$$
+
+$$\alpha_{P} \sim \text{Normal(} \bar{\alpha_{P}} , \sigma_{[P]}\text{)} \text{, for j = 1..39}$$
+$$\alpha_{m} \sim \text{Normal(} \bar{\alpha} , \sigma_{[M]}\text{)} \text{, for j = 1..39}$$
+$$\bar{\alpha_P} \sim \text{Normal(} 0 , 1.5\text{)}$$
+$$\bar{\alpha_M} \sim \text{Normal(} 0 , 1.5\text{)}$$
+
+
+$$\sigma_{\beta[SD]} \sim \text{Exponential(}  \text{1})$$
+$$\sigma_{\beta[SP]} \sim \text{Exponential(}  \text{1})$$
+$$\sigma_{\beta[L]} \sim \text{Exponential(}  \text{1})$$
+
+$$\sigma_{[P]} \sim \text{Exponential(}  \text{1})$$
+$$\sigma_{[M]} \sim \text{Exponential(}  \text{1})$$
+
+
+
+
+
+
+$$\beta_j \sim \text{Normal(} 0 , \sigma_{\beta}\text{)} \text{, for j = 1..12}$$
+$$\alpha_j \sim \text{Normal(} \alpha , \sigma_{\alpha}\text{)} \text{, for j = 1..39}$$
+$$\gamma_j \sim \text{Normal(} 0 , \sigma_{\gamma}\text{)} \text{, for j = 1..3}$$
+$$\bar{a} \sim \text{Normal(} 0 , 1.5\text{)}$$
+$$\sigma_{\alpha} \sim \text{Exponential(}  \text{1})$$
+$$\sigma_{\gamma} \sim \text{Exponential(}  \text{1})$$
+$$\sigma_{\beta} \sim \text{Exponential(}  \text{1})$$
+
+
+
+```{r}
+# now added random effect of melody, better explain tail of serial 
+model_2.2 <- cmdstan_model(stan_file = "stan/M2.2.multilevel.stan")
+
+model_2.2_fit <- model_2.2$sample(
+  data = data_m2, 
+  seed = 666, 
+  chains = 4, 
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+
+# TODO: Check 4% divergent transitions , now 1%! not bad JAB!
+model_2.2_fit_tib <- model_2.2_fit$summary()
+
+model_2.2_fit_tib
+
+
+```
+
+#### Figure 2.2
+
+```{r}
+# Coefs - Block (Lengths)
+model_2.2_epsilon <- model_2.2_fit$draws("epsilon", format = "df")
+
+
+
+
+# Maybe Change this to 'participant'
+m2.2_epsilons_gg <- model_2.2_epsilon |>
+  pivot_longer(cols = (starts_with("epsilon")), names_to = "coef",values_to = "samples") |>
+  mutate(coef = str_remove_all(coef, "epsilon")) |>
+  mutate(coef = str_remove_all(coef, "\\[")) |>
+  mutate(coef = str_remove_all(coef, "\\]")) |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 15)
+        ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  labs(y = "", x = "", title = "Serial Position of Note")
+
+m2.2_epsilons_gg
+
+# Coefs - Block (Lengths)
+model_2.2_kappa <- model_2.2_fit$draws("kappa", format = "df")
+
+# Maybe Change this to 'participant'
+# What additional informaiton IS THERE once you know serial position!!!
+
+m2.2_kappas_gg <- model_2.2_kappa |>
+  pivot_longer(cols = (starts_with("kappa")), names_to = "coef",values_to = "samples") |>
+  mutate(coef = case_when(
+    coef == "kappa[1]" ~ "2",
+    coef == "kappa[2]" ~ "3",
+    coef == "kappa[3]" ~ "5",
+    coef == "kappa[4]" ~ "7",
+    coef == "kappa[5]" ~ "9",
+  )) |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 15)
+        ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  labs(y = "", x = "", title = "Length of Melody")
+
+m2.2_kappas_gg
+
+# Coefs - SDs 
+model_2.2_beta <- model_2.2_fit$draws("beta", format = "df")
+
+right_beta_order_no_coef <- c(
+  "do",
+  "ra",
+  "re",
+  "me",
+  "mi",
+  "fa",
+  "fi",
+  "sol",
+  "le",
+  "la",
+  "te",
+  "ti"
+  
+)
+
+# Maybe Change this to 'participant'
+m2.2_betas_gg <- model_2.2_beta |>
+  pivot_longer(cols = (starts_with("beta")), names_to = "coef",values_to = "samples") |>
+    mutate(coef = case_when(
+    coef == "beta[1]" ~ "do",
+    coef == "beta[2]" ~ "ra",
+    coef == "beta[3]" ~ "re",
+    coef == "beta[4]" ~ "me",
+    coef == "beta[5]" ~ "mi",
+    coef == "beta[6]" ~ "fa",
+    coef == "beta[7]" ~ "fi",
+    coef == "beta[8]" ~ "sol",
+    coef == "beta[9]" ~ "le",
+    coef == "beta[10]" ~ "la",
+    coef == "beta[11]" ~ "te",
+    coef == "beta[12]" ~ "ti"
+  )) |>
+  mutate(coef = factor(coef, levels = right_beta_order_no_coef)) |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  scale_fill_viridis_d() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 15)
+        ) +
+  labs(title = "Scale Degree",
+       x = "",
+       y = "")
+
+m2.2_betas_gg
+#-------------------------------------------------------------------------------
+# Coefs - SDs 
+model_2.2_alphas <- model_2.2_fit$draws("alpha", format = "df")
+
+# Maybe Change this to 'participant'
+m2.2_alpha_gg <- model_2.2_alphas |>
+  pivot_longer(cols = (starts_with("alpha")), names_to = "coef",values_to = "samples") |>
+  ggplot(aes(y = fct_reorder(coef, samples), x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_viridis_d() +
+  theme_classic() +
+  scale_fill_viridis_d(option = "C" ) +
+  theme(legend.position = "none", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  labs(title = "Participant",
+       x = "", y = "") 
+
+m2.2_alpha_gg
+
+#-------------------------------------------------------------------------------
+
+model_2.2_meppas <- model_2.2_fit$draws("meppa", format = "df")
+
+# Maybe Change this to 'participant'
+m2.2_meppas_gg <- model_2.2_meppas |>
+  pivot_longer(cols = (starts_with("meppa")), names_to = "coef",values_to = "samples") |>
+  ggplot(aes(y = fct_reorder(coef, samples), x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_viridis_d() +
+  theme_classic() +
+  scale_fill_viridis_d(option = "C" ) +
+  theme(legend.position = "none", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  labs(title = "Melody",
+       x = "", y = "") 
+
+m2.2_meppas_gg
+
+#------------------------------------------------------------------------------
+# Assemble Figure 2.2 
+
+m2.2_epsilons_gg
+m2.2_kappas_gg
+m2.2_betas_gg
+
+figure_2.2_left <- plot_grid(m2.2_betas_gg, m2.2_epsilons_gg, m2.2_kappas_gg, ncol = 1, rel_heights = c(.4,.4, .2)) 
+figure_2.2_right <- plot_grid(m2.2_alpha_gg, m2.2_meppas_gg)
+
+figure_2.2_notitle <- plot_grid(figure_2.2_left, figure_2.2_right, rel_widths = c(.6,.4))
+
+figure_2.2 <- figure_2.2_notitle |>
+  add_left_vertical_label_to_cowplot("Log Odds Estimates") |>
+  add_right_vertical_label_to_cowplot("") |>
+  add_bottom_label_to_cowplot() |>
+  add_title_to_cowplot("Probability of Correct Recall ~ [Scale Degree] + [Serial Position] + [Length of Melody] + [1|Participant] + [1|Melody] ", title_shift = 50) 
+
+# TODO : Add Meaningful Values for Parameter Values 
+
+
+
+figure_2.2
+
+ggsave(filename = "figures/bayes/Figure2.2.png", plot = figure_2.2, dpi = "retina", height = 10, width = 15)
+
+```
+
+
+### M2.3 Multi Note Reaction Time Model 
+
+### M2.4 Multi-Note Block and Recall Position Reaction Time Model  
+
+### M3.1 Total Difficulty Model (IRT) 
+
+```{r}
+# TODO: Maybe combine all C major items for IRT 
+irt_tibble <- multi_tone_response_table |>
+  group_by(stimulus, subject) |>
+  mutate(partial_score = mean(score)) |>
+  mutate(irt_score = if_else(partial_score == 1, 1, 0)) |>
+  select(irt_score, stimulus, subject) |>
+  distinct()
+
+
+basic_irt <- cmdstan_model(stan_file = "stan/M3.1-IRT.stan")  
+  
+irt_list <- list(
+  N = nrow(irt_tibble),
+  J = length(unique(irt_tibble$subject)),
+  K = length(unique(irt_tibble$stimulus)),
+  student = as.numeric(as.factor(irt_tibble$subject)),
+  question = as.numeric(as.factor(irt_tibble$stimulus)),
+  answer = irt_tibble$irt_score
+)
+
+model_3.1_fit <- basic_irt$sample(
+  data = irt_list, 
+  seed = 666, 
+  chains = 4, 
+  parallel_chains = 4,
+  refresh = 500 # print update every 500 iters
+)
+
+
+model_3.1_tib <- model_3.1_fit$summary() 
+
+# Re-arrange ability plot by mean ability 
+# Put next to participant ability 
+
+model_3.1_beta <- model_3.1_fit$draws("beta", format = "df")
+
+# Difficulty 
+model_3.1_beta |>
+  pivot_longer(cols = (starts_with("beta")), names_to = "coef",values_to = "samples") |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  geom_vline(xintercept = 0, linetype = "dashed")
+
+model_3.1_alpha <- model_3.1_fit$draws("alpha", format = "df")
+
+# Ability (Re-order by mean ability)
+model_3.1_alpha |>
+  pivot_longer(cols = (starts_with("alpha")), names_to = "coef",values_to = "samples") |>
+  ggplot(aes(y = coef, x = samples, fill = coef)) +
+  stat_density_ridges(aes(point_fill = coef), 
+                      alpha = .4,
+                      quantile_lines = TRUE, 
+                      quantiles = c(0.045, 0.955)) +
+  theme_classic() +
+  geom_vline(xintercept = 0, linetype = "dashed")
+
+```
+
+> diff ~ length + serial_order * interaction ( with regularizing approach to see if there is something here )
+
+
+* reverse maybe add a reverse serial position (to capture last notes being easy, an alternative explanation for the pattern around 5-7 notes) maximal plot JAB TODO 
+* 
+
+### M3.2 Predicting Difficulty Score Model Comparisions  
+
+* Extract mean differences in difficulty, what predicts?
+
+```{r}
+
+```
+
+### M3.3 What predicts ability level?
+
+* Same, but now predict ability with demographics?
+
+## Helper 
+
+
+```{r}
+
+
+
+single_tone_condition_table |>
+  group_by(scale_degree_f) |>
+  summarise(mean_score = mean(score)) |>
+  ggplot(aes(x = scale_degree_f, y = mean_score)) +
+  geom_point()
+
+# Single ANOVA Model 
+model_1.0 <- cmdstan_model(stan_file = "stan/learn-single-dm.stan")
+
+
+
+
+```
+
