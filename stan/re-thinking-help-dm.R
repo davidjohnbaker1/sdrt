@@ -55,12 +55,15 @@ data_m1.1
 m11.sdrt <- ulam(
   alist(
     correct ~ dbinom( 1 , p ) ,
-    logit(p) <-  b[scale_degree] ,
-  #  a[participant] ~ dnorm( 0 , 1.5 ),
-    b[scale_degree] ~ dnorm( 0 , 0.5 )
+    logit(p) <-  a[participant] + b[scale_degree] + g[key] ,
+    a[participant] ~ dnorm( 0 , 1.5 ),
+    b[scale_degree] ~ dnorm( 0 , 0.5 ),
+    g[key] ~ dnorm(0 , 0.5)
   ) , data=data_m1.1 , chains=4 , log_lik=TRUE )
 
 precis( m11.sdrt , depth=2 )
+
+
 
 post <- extract.samples(m11.sdrt)
 correct_x <- inv_logit( post$b )
